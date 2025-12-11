@@ -2,6 +2,11 @@
   "name": "bid-box",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "author": {
+    "name": "Suddath Gautam",
+    "email": "suddath.gautam98@gmail.com"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -20,6 +25,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.8",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
