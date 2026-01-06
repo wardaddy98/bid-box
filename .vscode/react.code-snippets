@@ -1,0 +1,20 @@
+{
+  "React Server Component": {
+    "prefix": "rsc",
+    "scope": "typescriptreact",
+    "body": [
+      "interface Props {",
+      "$2",
+      "}",
+      "",
+      "const ${1:ComponentName} = (props: Props) => {",
+      "  return (",
+      "    <div>$3</div>",
+      "  );",
+      "};",
+      "",
+      "export default $1;",
+    ],
+    "description": "React Server Component",
+  },
+}
