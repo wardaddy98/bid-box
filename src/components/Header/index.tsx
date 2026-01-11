@@ -10,7 +10,6 @@ import styles from './index.module.scss';
 const Header = () => {
   const { isBase: findIsBase } = useBreakpoint();
   const isBase = findIsBase();
-
   return (
     <header className={`${styles.main} bg-white shadow-md`}>
       <div className="w-full px-2 sm:px-6 lg:px-8">

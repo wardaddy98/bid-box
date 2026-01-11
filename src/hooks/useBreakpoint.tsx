@@ -23,7 +23,7 @@ const getBreakpoint = (): breakpoint => {
 };
 
 const useBreakpoint = () => {
-  const [breakpoint, setBreakpoint] = useState<breakpoint>('base');
+  const [breakpoint, setBreakpoint] = useState<breakpoint | null>(null);
 
   const isBase = useCallback(() => breakpoint === 'base', [breakpoint]);
   const isSm = useCallback(() => breakpoint === 'sm', [breakpoint]);
