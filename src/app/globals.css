@@ -12,6 +12,8 @@
   --color-primary: var(--primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --text-heading: 24px;
+  --text-heading--line-height: 32px;
 }
 
 /* @media (prefers-color-scheme: dark) {

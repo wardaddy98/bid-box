@@ -65,7 +65,7 @@ const Header = () => {
               </div>
 
               <div className="block sm:hidden">
-                <IconButton>
+                <IconButton name="menu">
                   <Bars3Icon className="h-4 w-4" />
                 </IconButton>
               </div>
