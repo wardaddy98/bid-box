@@ -14,16 +14,11 @@ const Header = () => {
   return (
     <header className={`${styles.main} bg-white shadow-md z-100`}>
       <div className="w-full px-2 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <Link className="block" href="/">
               <span className="sr-only">Home</span>
-              <Image
-                src="/assets/logo_transparent.png"
-                alt="logo"
-                width={isBase ? 140 : 180}
-                height={isBase ? 200 : 160}
-              />
+              <Image src="/assets/logo_transparent.png" alt="logo" width={140} height={100} />
             </Link>
           </div>
 

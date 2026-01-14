@@ -4,6 +4,7 @@ import Badge from '@/components/Badge';
 import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
 import IconButton from '@/components/IconButton';
+import Rating from '@/components/Rating';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import DOMPurify from 'dompurify';
@@ -198,13 +199,67 @@ const Bid = () => {
             }}
           />
 
+          <Rating score={4.5} />
+
+          <p className="text-sm font-medium text-gray-600">1,745 global ratings</p>
+
+          <div className="flex items-center mt-4">
+            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
+              5 star
+            </a>
+            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
+              <div className="h-4 w-[70%] rounded bg-yellow-400"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-600">70%</span>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
+              4 star
+            </a>
+            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
+              <div className="h-4 w-[17%] rounded bg-yellow-400"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-600">17%</span>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
+              3 star
+            </a>
+            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
+              <div className="h-4 w-[8%] rounded bg-yellow-400"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-600">8%</span>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
+              2 star
+            </a>
+            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
+              <div className="h-4 w-[4%] rounded bg-yellow-400"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-600">4%</span>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
+              1 star
+            </a>
+            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
+              <div className="h-4 w-[1%] rounded bg-yellow-400"></div>
+            </div>
+            <span className="text-sm font-medium text-gray-600">1%</span>
+          </div>
+
           <form className="mt-4 flex gap-4">
             <Button variant="secondary">Add to Cart</Button>
             <Button variant="primary">Buy Now</Button>
           </form>
         </div>
       </div>
-      <div className="max-w-xl">
+      <div className="w-2xl">
         <h1 className="text-heading">Second SECtion</h1>
         <p className="mt-1.5 line-clamp-3 text-gray-700">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore nobis iure obcaecati
