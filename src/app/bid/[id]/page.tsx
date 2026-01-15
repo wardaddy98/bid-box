@@ -1,10 +1,12 @@
 'use client';
 
+import AuctionCard from '@/components/AuctionCard';
 import Badge from '@/components/Badge';
-import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
 import IconButton from '@/components/IconButton';
 import Rating from '@/components/Rating';
+import RecentBids from '@/components/RecentBids';
+import Review from '@/components/Review';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import DOMPurify from 'dompurify';
@@ -181,7 +183,7 @@ const Bid = () => {
 
         <Carousel images={images} imageContainerClassName="h-50 lg:h-100" />
 
-        <div className="mt-4 relative border  border-red-500 bg-white p-3 lg:p-6">
+        <div className="mt-4 relative bg-white p-3 lg:p-6">
           <h1 className="text-heading font-semibold">Wireless Headphones</h1>
 
           <div className="mt-4 flex flex-wrap gap-4 items-center">
@@ -193,81 +195,72 @@ const Bid = () => {
           </div>
 
           <div
-            className="mt-4"
+            className="mt-6"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(description),
             }}
           />
 
-          <Rating score={4.5} />
-
-          <p className="text-sm font-medium text-gray-600">1,745 global ratings</p>
-
-          <div className="flex items-center mt-4">
-            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
-              5 star
-            </a>
-            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
-              <div className="h-4 w-[70%] rounded bg-yellow-400"></div>
+          <div className="mt-6 flex items-center justify-between border-b-2 border-gray-200 pb-6 ">
+            <div className="w-1/2">
+              <h1 className="font-semibold text-2xl">Ratings & Reviews</h1>
+              <div className="mt-2 flex items-center justify-start gap-6">
+                <div className="border-r-2 border-gray-200 pr-2">
+                  <h1 className="text-2xl font-semibold">5.0</h1>
+                </div>
+                <div className="flex flex-col gap-1 items-start">
+                  <Rating score={4.57676} />
+                  <h1 className="text-sm text-gray-400 font-semibold">(1 review)</h1>
+                </div>
+              </div>
             </div>
-            <span className="text-sm font-medium text-gray-600">70%</span>
+
+            <div className="w-1/2">
+              <div className="flex items-center mt-2">
+                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                  Shipping
+                </span>
+                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                </div>
+              </div>
+              <div className="flex items-center mt-2">
+                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                  Product Quality
+                </span>
+                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                </div>
+              </div>
+              <div className="flex items-center mt-2">
+                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                  Packaging
+                </span>
+                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                </div>
+              </div>
+              <div className="flex items-center mt-2">
+                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                  As Described
+                </span>
+                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center mt-4">
-            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
-              4 star
-            </a>
-            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
-              <div className="h-4 w-[17%] rounded bg-yellow-400"></div>
-            </div>
-            <span className="text-sm font-medium text-gray-600">17%</span>
+          <div className="flex flex-col gap-4 mt-6">
+            {[...Array(5)].map((_, idx) => (
+              <Review key={idx} />
+            ))}
           </div>
-
-          <div className="flex items-center mt-4">
-            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
-              3 star
-            </a>
-            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
-              <div className="h-4 w-[8%] rounded bg-yellow-400"></div>
-            </div>
-            <span className="text-sm font-medium text-gray-600">8%</span>
-          </div>
-
-          <div className="flex items-center mt-4">
-            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
-              2 star
-            </a>
-            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
-              <div className="h-4 w-[4%] rounded bg-yellow-400"></div>
-            </div>
-            <span className="text-sm font-medium text-gray-600">4%</span>
-          </div>
-
-          <div className="flex items-center mt-4">
-            <a href="#" className="w-14 text-sm font-medium text-blue-600 hover:underline">
-              1 star
-            </a>
-            <div className="mx-4 h-4 w-2/4 rounded bg-gray-200">
-              <div className="h-4 w-[1%] rounded bg-yellow-400"></div>
-            </div>
-            <span className="text-sm font-medium text-gray-600">1%</span>
-          </div>
-
-          <form className="mt-4 flex gap-4">
-            <Button variant="secondary">Add to Cart</Button>
-            <Button variant="primary">Buy Now</Button>
-          </form>
         </div>
       </div>
-      <div className="w-2xl">
-        <h1 className="text-heading">Second SECtion</h1>
-        <p className="mt-1.5 line-clamp-3 text-gray-700">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore nobis iure obcaecati
-          pariatur. Officiis qui, enim cupiditate aliquam corporis iste. Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. Labore nobis iure obcaecati pariatur. Officiis qui, enim
-          cupiditate aliquam corporis iste. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Labore nobis iure obcaecati pariatur. Officiis qui, enim cupiditate aliquam corporis iste.
-        </p>
+      <div className="w-3xl">
+        <AuctionCard status="active" />
+        <RecentBids />
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ const Star = ({ percentage, id }: { percentage: number; id: number }) => {
   const clipId = `star-fill-${id}`;
 
   return (
-    <svg viewBox="0 0 24 24" className="w-6 h-6">
+    <svg viewBox="0 0 24 24" className="w-4.5 h-4.5">
       <defs>
         <clipPath id={clipId}>
           <rect width={`${percentage}%`} height="24" />

@@ -29,7 +29,7 @@ export default function Carousel(props: Props) {
 
   return (
     <>
-      <div className="relative w-full overflow-hidden border-2 border-gray-200 rounded-sm">
+      <div className="relative w-full overflow-hidden border-2 border-gray-200 rounded-2xl">
         {/* Slides */}
         <div
           className="flex transition-transform duration-500 ease-out"
