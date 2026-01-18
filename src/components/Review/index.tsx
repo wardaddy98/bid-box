@@ -1,5 +1,5 @@
 import { CheckBadgeIcon, CubeIcon, DocumentTextIcon, TruckIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
+import Avatar from '../Avatar';
 import Badge from '../Badge';
 import Rating from '../Rating';
 
@@ -10,16 +10,11 @@ interface Props {
 const Review = (props: Props) => {
   return (
     <div className="flex items-start gap-4 border-2 border-gray-200 rounded-2xl p-4">
-      <div className="relative rounded-full w-11 h-11  flex-none">
-        <Image
-          alt=""
-          src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
-          className=" object-cover rounded-full"
-          fill
-        />
-
-        <CheckBadgeIcon className="h-5.5 w-5.5 text-green-400 absolute -bottom-1 -right-2" />
-      </div>
+      <Avatar
+        imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
+        checkBadge
+        size={12}
+      />
 
       <div>
         <div className="flex items-center gap-2">

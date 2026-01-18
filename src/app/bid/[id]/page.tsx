@@ -1,12 +1,15 @@
 'use client';
 
 import AuctionCard from '@/components/AuctionCard';
+import AuctionDetails from '@/components/AuctionDetails';
 import Badge from '@/components/Badge';
+import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
 import IconButton from '@/components/IconButton';
 import Rating from '@/components/Rating';
 import RecentBids from '@/components/RecentBids';
 import Review from '@/components/Review';
+import SellerDetails from '@/components/SellerDetails';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import DOMPurify from 'dompurify';
@@ -256,11 +259,16 @@ const Bid = () => {
               <Review key={idx} />
             ))}
           </div>
+          <div className="flex items-center justify-center mt-4">
+            <Button variant="text">Load More</Button>
+          </div>
         </div>
       </div>
       <div className="w-3xl">
         <AuctionCard status="active" />
         <RecentBids />
+        <AuctionDetails />
+        <SellerDetails />
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
+import NotFoundClient from '@/components/NotFoundClient';
+
 const NotFound = () => {
-  return <div>Custom Page not found</div>;
+  return <NotFoundClient />;
 };
 
 export default NotFound;

@@ -13,7 +13,7 @@ const IconButton = (props: Props) => {
   return (
     <button
       style={style}
-      className={`${rounded ? 'rounded-full' : 'rounded-sm'} cursor-pointer bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75 ${className}`}
+      className={`${rounded ? 'rounded-full' : 'rounded-sm'} cursor-pointer bg-gray-100 p-2 text-gray-600 transition hover:text-primary/75 ${className}`}
       {...rest}
     >
       <span className="sr-only">{name}</span>

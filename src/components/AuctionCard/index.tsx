@@ -1,5 +1,16 @@
-import { CakeIcon, CheckBadgeIcon, ClockIcon, MapPinIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
+'use client';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import {
+  AdjustmentsHorizontalIcon,
+  CakeIcon,
+  ClockIcon,
+  MapPinIcon,
+} from '@heroicons/react/24/solid';
+import { useState } from 'react';
+import Avatar from '../Avatar';
+import Button from '../Button';
+import Divider from '../Divider';
+import Tooltip from '../Tooltip';
 
 interface Props {
   test?: string;
@@ -8,6 +19,8 @@ interface Props {
 
 const AuctionCard = (props: Props) => {
   const { status } = props;
+
+  const [customBidState, setCustomBidState] = useState(false);
   return (
     <div className="rounded-2xl border-2 border-gray-200 overflow-hidden">
       <div
@@ -43,16 +56,11 @@ const AuctionCard = (props: Props) => {
       </div>
 
       <div className="my-2 flex items-start gap-6 py-2 px-6">
-        <div className="relative rounded-full w-11 h-11 flex-none">
-          <Image
-            alt=""
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
-            className=" object-cover rounded-full"
-            fill
-          />
-
-          <CheckBadgeIcon className="h-5.5 w-5.5 text-green-400 absolute -bottom-1 -right-2" />
-        </div>
+        <Avatar
+          imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
+          checkBadge
+          size={12}
+        />
 
         <div>
           <div className="flex items-center gap-2">
@@ -72,6 +80,59 @@ const AuctionCard = (props: Props) => {
           <p className="mt-2 text-gray-700">Lorem ipsum dolor s</p>
         </div>
       </div>
+
+      {status === 'active' && (
+        <div className="py-2 px-6 border-t-2 border-gray-200">
+          <div className="flex items-center gap-2">
+            <span className=" font-semibold">Place Bids</span>
+            <Tooltip content="Book any number of bids. Each bid will be placed for you before the timer would reach zero. The first bid will be placed immediately.">
+              <InformationCircleIcon className="h-4 w-4 text-gray-500 hover:text-primary" />
+            </Tooltip>
+          </div>
+          <span className="text-sm font-semibold text-gray-400">
+            How many bids do you want to place?
+          </span>
+
+          {customBidState ? (
+            <div className="flex items-center justify-between my-2">
+              <span>input</span>
+              <div className="flex items-center gap-2">
+                <Button variant="primary" onClick={() => setCustomBidState(false)}>
+                  Book
+                </Button>
+                <Button variant="secondary" onClick={() => setCustomBidState(false)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="my-2"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
+                gap: '10px',
+              }}
+            >
+              <Button variant="primary">1</Button>
+              <Button variant="primary">5</Button>
+              <Button variant="primary">25</Button>
+              <Button variant="primary">50</Button>
+              <Button variant="primary">75</Button>
+              <Button variant="primary">100</Button>
+              <Button variant="primary">200</Button>
+              <Button variant="primary" onClick={() => setCustomBidState(true)}>
+                <AdjustmentsHorizontalIcon className="h-5 w-5" />
+              </Button>
+            </div>
+          )}
+          <Divider className="my-5" />
+
+          <div className="flex items-center justify-center mb-2">
+            <Button variant="text">But it now for $656.68</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
