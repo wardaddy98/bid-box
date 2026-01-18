@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 type IconProps =
@@ -6,10 +7,11 @@ type IconProps =
   | { startIcon?: undefined; endIcon?: undefined };
 
 interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: string;
+  children: ReactNode;
   style?: React.CSSProperties;
   className?: string;
-  variant: 'primary' | 'secondary';
+  variant: 'primary' | 'secondary' | 'text';
+  disabled?: boolean;
 }
 
 type Props = BaseProps & IconProps;
@@ -19,7 +21,14 @@ const Button = (props: Props) => {
   return (
     <button
       {...rest}
-      className={`${variant === 'primary' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-900'} block w-full rounded-sm px-4 py-3 text-sm font-medium transition hover:scale-105 shadow ${className}`}
+      className={clsx(
+        `block  rounded-sm text-sm font-medium transition duration-75 ease-out  ${className}`,
+        variant === 'primary' && 'bg-primary text-white shadow',
+        variant === 'secondary' && 'bg-gray-200 text-gray-900 shadow',
+        variant === 'text' ? '  text-primary font-semibold hover:underline' : 'px-4 py-2',
+        rest?.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:scale-105',
+        // : 'cursor-pointer hover:scale-105 hover:underline',
+      )}
     >
       <div
         className={`flex items-center gap-2 justify-center ${(startIcon || endIcon) && 'justify-start'}`}
