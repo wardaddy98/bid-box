@@ -6,10 +6,11 @@ import {
   ClockIcon,
   MapPinIcon,
 } from '@heroicons/react/24/solid';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Avatar from '../Avatar';
 import Button from '../Button';
 import Divider from '../Divider';
+import TextInput from '../TextInput';
 import Tooltip from '../Tooltip';
 
 interface Props {
@@ -21,6 +22,12 @@ const AuctionCard = (props: Props) => {
   const { status } = props;
 
   const [customBidState, setCustomBidState] = useState(false);
+  const [customBidAmount, setCustomBidAmount] = useState<number | null>(0);
+
+  const handleCustomBidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomBidAmount(Number(e.target.value ?? 0));
+  };
+
   return (
     <div className="rounded-2xl border-2 border-gray-200 overflow-hidden">
       <div
@@ -95,7 +102,12 @@ const AuctionCard = (props: Props) => {
 
           {customBidState ? (
             <div className="flex items-center justify-between my-2">
-              <span>input</span>
+              <TextInput
+                placeholder="Bid Amount"
+                value={customBidAmount ?? 0}
+                min={'1'}
+                onChange={handleCustomBidAmountChange}
+              />
               <div className="flex items-center gap-2">
                 <Button variant="primary" onClick={() => setCustomBidState(false)}>
                   Book
