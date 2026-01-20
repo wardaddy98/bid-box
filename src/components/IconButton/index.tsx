@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,14 +7,20 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   rounded?: boolean;
   className?: string;
   name: string;
+  naked?: boolean;
 }
 
 const IconButton = (props: Props) => {
-  const { style = {}, children, rounded = false, className = '', name, ...rest } = props;
+  const { style = {}, children, rounded = false, className = '', name, naked, ...rest } = props;
   return (
     <button
       style={style}
-      className={`${rounded ? 'rounded-full' : 'rounded-sm'} cursor-pointer bg-gray-100 p-2 text-gray-600 transition hover:text-primary/75 ${className}`}
+      className={clsx(
+        `cursor-pointer p-2 text-gray-600 transition hover:text-primary/75 disabled:opacity-40 disabled:cursor-not-allowed`,
+        !naked && 'bg-gray-100',
+        rounded ? 'rounded-full' : 'rounded-sm',
+        className,
+      )}
       {...rest}
     >
       <span className="sr-only">{name}</span>

@@ -38,7 +38,7 @@ const Modal = (props: Props) => {
       aria-labelledby="modalTitle"
     >
       <div
-        className={`${size === 'small' ? 'w-lg' : size === 'medium' ? 'w-2xl' : 'w-7xl'} rounded-2xl bg-white shadow-lg `}
+        className={`${size === 'small' ? 'w-lg' : size === 'medium' ? 'w-2xl' : 'w-7xl'} rounded-lg bg-white shadow-lg `}
       >
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
           <h2 id="modalTitle" className="text-xl font-bold text-gray-900 lg:text-2xl">
@@ -49,7 +49,7 @@ const Modal = (props: Props) => {
           </IconButton>
         </div>
 
-        <div className="mt-4 p-4 max-h-[80vh] overflow-x-auto">{children}</div>
+        <div className="mt-2 p-4 max-h-[80vh] overflow-x-auto">{children}</div>
       </div>
     </div>
   );

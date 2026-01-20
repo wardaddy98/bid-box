@@ -27,9 +27,7 @@ const Accordion = (props: AccordionProps) => {
         </svg>
       </summary>
 
-      <div className="px-4 py-2">
-        <p className="text-gray-700">{children}</p>
-      </div>
+      <div className="px-4 py-2">{children}</div>
     </details>
   );
 };

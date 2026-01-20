@@ -42,13 +42,7 @@
     "source.fixAll.eslint": "explicit"
   },
 
-  "eslint.validate": [
-    "react",
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["react", "javascript", "typescript", "javascriptreact", "typescriptreact"],
 
-  "cSpell.words": ["Gautam"]
+  "cSpell.words": ["Gautam", "swipeable"]
 }
