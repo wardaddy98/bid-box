@@ -26,36 +26,52 @@ const Header = () => {
             <nav aria-label="Global" className="hidden md:block">
               <ul className="flex items-center gap-6 text-sm">
                 <li>
-                  <NavButton href="#" label="About" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    About
+                  </NavButton>
                 </li>
 
                 <li>
-                  <NavButton href="#" label="Careers" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    Careers
+                  </NavButton>
                 </li>
 
                 <li>
-                  <NavButton href="#" label="History" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    History
+                  </NavButton>
                 </li>
 
                 <li>
-                  <NavButton href="#" label="Services" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    Services
+                  </NavButton>
                 </li>
 
                 <li>
-                  <NavButton href="#" label="Projects" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    Projects
+                  </NavButton>
                 </li>
 
                 <li>
-                  <NavButton href="#" label="Blog" variant="text" className="px-0 py-0" />
+                  <NavButton href="#" variant="text" className="px-0 py-0">
+                    Blog
+                  </NavButton>
                 </li>
               </ul>
             </nav>
 
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
-                <NavButton href="/login" label="Login" variant="primary" />
+                <NavButton href="/login" variant="primary">
+                  Login
+                </NavButton>
                 <div className="hidden sm:flex">
-                  <NavButton href="/register" label="Register" variant="secondary" />
+                  <NavButton href="/register" variant="secondary">
+                    Register
+                  </NavButton>
                 </div>
               </div>
 

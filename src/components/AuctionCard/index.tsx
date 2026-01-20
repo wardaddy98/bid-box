@@ -22,7 +22,7 @@ const AuctionCard = (props: Props) => {
   const { status } = props;
 
   const [customBidState, setCustomBidState] = useState(false);
-  const [customBidAmount, setCustomBidAmount] = useState<number | null>(0);
+  const [customBidAmount, setCustomBidAmount] = useState<number>(0);
 
   const handleCustomBidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomBidAmount(Number(e.target.value ?? 0));
@@ -84,7 +84,7 @@ const AuctionCard = (props: Props) => {
             </div>
           </div>
 
-          <p className="mt-2 text-gray-700">Lorem ipsum dolor s</p>
+          <p className="mt-2 text-sm text-gray-500">Lorem ipsum dolor s</p>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ const AuctionCard = (props: Props) => {
             <div className="flex items-center justify-between my-2">
               <TextInput
                 placeholder="Bid Amount"
-                value={customBidAmount ?? 0}
+                value={customBidAmount || ''}
                 min={'1'}
                 onChange={handleCustomBidAmountChange}
               />

@@ -12,14 +12,15 @@ import Review from '@/components/Review';
 import SellerDetails from '@/components/SellerDetails';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { useParams } from 'next/navigation';
 
 const images = [
   'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
-  'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
-  'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
-  'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
+  'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;',
+  // 'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
+  // 'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
+  // 'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
 ];
 
 const description = `
@@ -171,7 +172,6 @@ const description = `
 
 const Bid = () => {
   const { id } = useParams();
-  console.log(id, 'NTT');
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -184,13 +184,26 @@ const Bid = () => {
           <HeartIconSolid className="h-4 w-4 text-red-500" />
         </IconButton>
 
-        <Carousel images={images} imageContainerClassName="h-50 lg:h-100" />
+        <Carousel images={images} imageContainerClassName="h-80 lg:h-100" />
 
         <div className="mt-4 relative bg-white p-3 lg:p-6">
-          <h1 className="text-heading font-semibold">Wireless Headphones</h1>
+          <h1 className="text-lg lg:text-heading font-semibold">
+            Nintendo Switch 2 Console + The Bolvaint Alaric Automatic Watch - Noir in Black + Veho -
+            M3 Bluetooth Wireless Speaker
+          </h1>
 
-          <div className="mt-4 flex flex-wrap gap-4 items-center">
+          <div className="mt-4 flex flex-wrap gap-2 items-center">
             <Badge text="Test" icon={<HeartIconSolid className="w-4 h-4" />} />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
+            <Badge text="Test" />
             <Badge text="Test" />
             <Badge text="Test" />
             <Badge text="Test" />
@@ -198,7 +211,7 @@ const Bid = () => {
           </div>
 
           <div
-            className="mt-6"
+            className="mt-6 hidden lg:block"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(description),
             }}
