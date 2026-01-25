@@ -29,7 +29,7 @@ const AuctionCard = (props: Props) => {
   };
 
   return (
-    <div className="rounded-2xl border-2 border-gray-200 overflow-hidden">
+    <div className="rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 overflow-hidden">
       <div
         className={`p-2 flex items-center justify-center gap-2
         ${

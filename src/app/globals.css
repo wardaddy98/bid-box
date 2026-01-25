@@ -4,17 +4,23 @@
   --background: #ffffff;
   --foreground: #171717;
   --primary: #0187e6;
-  /* --primary: rgb(120, 157, 188); */
+  --accent: #f2f8fa;
+  --header-height: 56px /* --primary: rgb(120, 157, 188); */;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
+  --color-accent: var(--accent);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --text-heading: 24px;
   --text-heading--line-height: 32px;
+
+  --size-header: var(--header-height);
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -29,4 +35,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none; /* Firefox */
 }

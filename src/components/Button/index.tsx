@@ -12,17 +12,26 @@ interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   variant: 'primary' | 'secondary' | 'text';
   disabled?: boolean;
+  childrenClassName?: string;
 }
 
 type Props = BaseProps & IconProps;
 
 const Button = (props: Props) => {
-  const { children, className, startIcon, endIcon, variant, ...rest } = props;
+  const {
+    children,
+    className,
+    startIcon,
+    endIcon,
+    variant,
+    childrenClassName = '',
+    ...rest
+  } = props;
   return (
     <button
       {...rest}
       className={clsx(
-        `block  rounded-sm text-sm font-medium transition duration-75 ease-out  ${className}`,
+        `block rounded-sm text-sm font-semibold transition duration-75 ease-out  ${className}`,
         variant === 'primary' && 'bg-primary text-white shadow',
         variant === 'secondary' && 'bg-gray-200 text-gray-900 shadow',
         variant === 'text' ? '  text-primary font-semibold hover:underline' : 'px-4 py-2',
@@ -34,7 +43,7 @@ const Button = (props: Props) => {
         className={`flex items-center gap-2 justify-center ${(startIcon || endIcon) && 'justify-start'}`}
       >
         {startIcon && startIcon}
-        <span>{children}</span>
+        <span className={childrenClassName}>{children}</span>
         {endIcon && endIcon}
       </div>
     </button>

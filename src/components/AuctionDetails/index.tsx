@@ -8,7 +8,7 @@ interface Props {
 
 const AuctionDetails = (props: Props) => {
   return (
-    <div className="mt-6 rounded-2xl border-2 border-gray-200 px-6 py-4">
+    <div className="mt-6 rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 px-6 py-4">
       <span className="block font-semibold">Auction Details</span>
 
       <div className="mt-4 space-y-2">
