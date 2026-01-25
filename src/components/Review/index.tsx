@@ -9,7 +9,7 @@ interface Props {
 
 const Review = (props: Props) => {
   return (
-    <div className="flex items-start gap-4 border-2 border-gray-200 rounded-2xl p-4">
+    <div className="flex items-start gap-4 border-gray-200 p-4 rounded-none lg:rounded-2xl border-t-2 lg:border-2 last:border-b-2">
       <Avatar
         imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
         checkBadge

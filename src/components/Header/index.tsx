@@ -1,20 +1,52 @@
 'use client';
 
 import useBreakpoint from '@/hooks/useBreakpoint';
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import { ArrowLeftEndOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
-import IconButton from '../IconButton';
+import Dropdown, { MenuItem } from '../Dropdown';
 import NavButton from '../NavButton';
 import styles from './index.module.scss';
 
 const Header = () => {
   const { isBase: findIsBase } = useBreakpoint();
   const isBase = findIsBase();
+
+  const menuItems: MenuItem[] = [
+    {
+      label: 'About',
+      onClick: () => {},
+    },
+    {
+      label: 'Careers',
+      onClick: () => {},
+    },
+    {
+      label: 'History',
+      onClick: () => {},
+    },
+    {
+      label: 'Blog',
+      onClick: () => {},
+    },
+    {
+      label: 'Project',
+      onClick: () => {},
+    },
+    {
+      label: 'Career',
+      onClick: () => {},
+    },
+    {
+      label: 'Sign Out',
+      onClick: () => {},
+      startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
+    },
+  ];
   return (
     <header className={`${styles.main} bg-white shadow-md z-100`}>
       <div className="w-full px-2 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between">
+        <div className="flex h-(--size-header) items-center justify-between">
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <Link className="block" href="/">
               <span className="sr-only">Home</span>
@@ -76,9 +108,9 @@ const Header = () => {
               </div>
 
               <div className="block sm:hidden">
-                <IconButton name="menu">
+                <Dropdown menuItems={menuItems}>
                   <Bars3Icon className="h-4 w-4" />
-                </IconButton>
+                </Dropdown>
               </div>
             </div>
           </div>

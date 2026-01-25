@@ -6,13 +6,14 @@ import Badge from '@/components/Badge';
 import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
 import IconButton from '@/components/IconButton';
+import ProductDescription from '@/components/ProductDescription';
 import Rating from '@/components/Rating';
 import RecentBids from '@/components/RecentBids';
 import Review from '@/components/Review';
 import SellerDetails from '@/components/SellerDetails';
+import Tray from '@/components/Tray';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import DOMPurify from 'isomorphic-dompurify';
 import { useParams } from 'next/navigation';
 
 const images = [
@@ -172,118 +173,122 @@ const description = `
 
 const Bid = () => {
   const { id } = useParams();
-
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      <div className="group relative block overflow-hidden">
-        <IconButton
-          name="Wishlist"
-          rounded
-          className="absolute right-2 top-2 lg:right-4 lg:top-4 z-10 color"
-        >
-          <HeartIconSolid className="h-4 w-4 text-red-500" />
-        </IconButton>
+    <>
+      <div className="flex flex-col lg:flex-row gap-6 border-2 my-6 lg:mx-32">
+        <div className="group relative block overflow-hidden">
+          <IconButton
+            name="Wishlist"
+            rounded
+            className="absolute right-2 top-2 lg:right-4 lg:top-4 z-10 color"
+          >
+            <HeartIconSolid className="h-4 w-4 text-red-500" />
+          </IconButton>
 
-        <Carousel images={images} imageContainerClassName="h-80 lg:h-100" />
+          <Carousel images={images} imageContainerClassName="h-80 lg:h-100" />
 
-        <div className="mt-4 relative bg-white p-3 lg:p-6">
-          <h1 className="text-lg lg:text-heading font-semibold">
-            Nintendo Switch 2 Console + The Bolvaint Alaric Automatic Watch - Noir in Black + Veho -
-            M3 Bluetooth Wireless Speaker
-          </h1>
+          <div className="mt-4 relative bg-white">
+            <h1 className="text-lg lg:text-heading font-semibold px-3 lg:px-6">
+              Nintendo Switch 2 Console + The Bolvaint Alaric Automatic Watch - Noir in Black + Veho
+              - M3 Bluetooth Wireless Speaker
+            </h1>
 
-          <div className="mt-4 flex flex-wrap gap-2 items-center">
-            <Badge text="Test" icon={<HeartIconSolid className="w-4 h-4" />} />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-            <Badge text="Test" />
-          </div>
+            <div className="mt-4 flex flex-wrap gap-2 items-center px-3 lg:px-6">
+              <Badge onClick={() => {}} text="Test" icon={<HeartIconSolid className="w-4 h-4" />} />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+              <Badge text="Test" />
+            </div>
 
-          <div
-            className="mt-6 hidden lg:block"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(description),
-            }}
-          />
+            <div className="mt-4 block lg:hidden">
+              <AuctionCard status="active" />
+              <RecentBids />
+              <AuctionDetails />
+              <SellerDetails />
+            </div>
 
-          <div className="mt-6 flex items-center justify-between border-b-2 border-gray-200 pb-6 ">
-            <div className="w-1/2">
-              <h1 className="font-semibold text-2xl">Ratings & Reviews</h1>
-              <div className="mt-2 flex items-center justify-start gap-6">
-                <div className="border-r-2 border-gray-200 pr-2">
-                  <h1 className="text-2xl font-semibold">5.0</h1>
+            <ProductDescription description={description} />
+
+            <div className="mt-6 flex items-center justify-between lg:border-b-2 border-gray-200 px-3 lg:px-6 pb-6 ">
+              <div className="w-1/2">
+                <h1 className="font-semibold text-xl lg:text-2xl">Ratings & Reviews</h1>
+                <div className="mt-2 flex items-center justify-start gap-6">
+                  <div className="border-r-2 border-gray-200 pr-2">
+                    <h1 className="text-2xl font-semibold">5.0</h1>
+                  </div>
+                  <div className="flex flex-col gap-1 items-start">
+                    <Rating score={4.57676} />
+                    <h1 className="text-sm text-gray-400 font-semibold">(1 review)</h1>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-1 items-start">
-                  <Rating score={4.57676} />
-                  <h1 className="text-sm text-gray-400 font-semibold">(1 review)</h1>
+              </div>
+
+              <div className="w-1/2">
+                <div className="flex items-center mt-2">
+                  <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                    Shipping
+                  </span>
+                  <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                  </div>
+                </div>
+                <div className="flex items-center mt-2">
+                  <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                    Product Quality
+                  </span>
+                  <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                  </div>
+                </div>
+                <div className="flex items-center mt-2">
+                  <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                    Packaging
+                  </span>
+                  <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                  </div>
+                </div>
+                <div className="flex items-center mt-2">
+                  <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
+                    As Described
+                  </span>
+                  <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
+                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="w-1/2">
-              <div className="flex items-center mt-2">
-                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
-                  Shipping
-                </span>
-                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
-                </div>
-              </div>
-              <div className="flex items-center mt-2">
-                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
-                  Product Quality
-                </span>
-                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
-                </div>
-              </div>
-              <div className="flex items-center mt-2">
-                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
-                  Packaging
-                </span>
-                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
-                </div>
-              </div>
-              <div className="flex items-center mt-2">
-                <span className="w-36 text-right whitespace-nowrap text-xs font-bold text-gray-400">
-                  As Described
-                </span>
-                <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                  <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
-                </div>
-              </div>
+            <div className="flex flex-col gap-4 mt-6">
+              {[...Array(5)].map((_, idx) => (
+                <Review key={idx} />
+              ))}
             </div>
-          </div>
-
-          <div className="flex flex-col gap-4 mt-6">
-            {[...Array(5)].map((_, idx) => (
-              <Review key={idx} />
-            ))}
-          </div>
-          <div className="flex items-center justify-center mt-4">
-            <Button variant="text">Load More</Button>
+            <div className="flex items-center justify-center mt-4">
+              <Button variant="text">Load More</Button>
+            </div>
           </div>
         </div>
+        <div className="hidden lg:block w-full lg:w-3xl p-3 lg:p-0">
+          <AuctionCard status="active" />
+          <RecentBids />
+          <AuctionDetails />
+          <SellerDetails />
+        </div>
       </div>
-      <div className="w-3xl">
-        <AuctionCard status="active" />
-        <RecentBids />
-        <AuctionDetails />
-        <SellerDetails />
-      </div>
-    </div>
+      <Tray heading="Recently Viewed Auctions" />
+    </>
   );
 };
 export default Bid;

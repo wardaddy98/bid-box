@@ -24,9 +24,9 @@ const RecentBids = (props: RecentBidsProps) => {
 
   return (
     <>
-      <div className="mt-6 rounded-2xl border-2 border-gray-200 px-6 py-4">
+      <div className="mt-6 rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 px-6 py-4">
         <span className="block font-semibold">Recent Top Bids</span>
-        <div className="mt-2 flex flex-col gap-2 justify-start">
+        <div className="mt-2 flex flex-col gap-1 lg:gap-2 justify-start">
           {[...Array(10)].map((_, idx) => (
             <Bid key={idx} topBid={idx === 0} />
           ))}

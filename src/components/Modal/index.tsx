@@ -1,5 +1,6 @@
 'use client';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 import { ReactNode, useEffect } from 'react';
 import IconButton from '../IconButton';
 
@@ -38,7 +39,12 @@ const Modal = (props: Props) => {
       aria-labelledby="modalTitle"
     >
       <div
-        className={`${size === 'small' ? 'w-lg' : size === 'medium' ? 'w-2xl' : 'w-7xl'} rounded-lg bg-white shadow-lg `}
+        className={clsx(
+          `w-[90vw] rounded-lg bg-white shadow-lg `,
+          size === 'small' && 'lg:w-[35vw]',
+          size === 'medium' && 'lg:w-[40vw]',
+          size === 'large' && 'lg:w-[80vw]',
+        )}
       >
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
           <h2 id="modalTitle" className="text-xl font-bold text-gray-900 lg:text-2xl">

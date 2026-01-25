@@ -16,7 +16,7 @@ const SellerDetails = (props: Props) => {
   const toggleDetailsModalState = () => setDetailsModalState(prev => !prev);
   return (
     <>
-      <div className="mt-6 rounded-2xl border-2 border-gray-200 px-6 py-4">
+      <div className="mt-6 rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 px-6 py-4">
         <span className="block font-semibold">Seller Details</span>
 
         <div className="mt-4 flex items-center justify-between">
