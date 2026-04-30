@@ -5,6 +5,7 @@ import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
 import GoogleIcon from '@/icons/GoogleIcon';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import LoginAnimationJson from '../../../../public/assets/login_animation.json';
 
@@ -14,6 +15,8 @@ interface FormValues {
 }
 
 const Login = () => {
+  const router = useRouter();
+
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
     password: '',
@@ -28,13 +31,13 @@ const Login = () => {
 
   return (
     <>
-      <div className="flex w-full max-w-[90vw] mx-auto overflow-hidden bg-white rounded-lg shadow-2xl lg:max-w-4xl border-2 border-gray-200">
+      <div className="flex w-full max-w-[90vw] mx-auto overflow-hidden bg-white rounded-lg shadow-2xl lg:max-w-4xl border-2 border-gray-200 mt-16">
         <div className="hidden bg-cover lg:block lg:w-1/2 border-r-2 border-gray-200 ">
           <LottieAnimation lottieJson={LoginAnimationJson} />
         </div>
 
         <div className="w-full px-6 py-8 md:px-8 lg:w-1/2">
-          <div className="relative h-8 sm:h-9">
+          <div className="relative h-8 sm:h-9 cursor-pointer" onClick={() => router.replace('/')}>
             <Image
               fill
               alt="Logo"

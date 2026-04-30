@@ -4,6 +4,7 @@ import useBreakpoint from '@/hooks/useBreakpoint';
 import { ArrowLeftEndOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Dropdown, { MenuItem } from '../Dropdown';
 import NavButton from '../NavButton';
 import styles from './index.module.scss';
@@ -11,6 +12,8 @@ import styles from './index.module.scss';
 const Header = () => {
   const { isBase: findIsBase } = useBreakpoint();
   const isBase = findIsBase();
+  const pathname = usePathname();
+  console.log(pathname, 'LKK');
 
   const menuItems: MenuItem[] = [
     {
@@ -43,6 +46,8 @@ const Header = () => {
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
+
+  if (pathname.includes('login') || pathname.includes('register')) return <></>;
   return (
     <header className={`${styles.main} bg-white shadow-md z-100`}>
       <div className="w-full px-2 sm:px-6 lg:px-8">
@@ -108,7 +113,7 @@ const Header = () => {
               </div>
 
               <div className="block sm:hidden">
-                <Dropdown menuItems={menuItems}>
+                <Dropdown variant="icon" menuItems={menuItems}>
                   <Bars3Icon className="h-4 w-4" />
                 </Dropdown>
               </div>

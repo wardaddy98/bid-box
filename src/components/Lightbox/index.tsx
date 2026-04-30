@@ -49,8 +49,8 @@ function LightBox(props: Props) {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
-      if (e.key === 'ArrowLeft') onPrev();
-      if (e.key === 'ArrowRight') onNext();
+      if (e.key === 'ArrowLeft' && activeIndex !== 0) onPrev();
+      if (e.key === 'ArrowRight' && activeIndex < images.length - 1) onNext();
     };
 
     window.addEventListener('keydown', onKeyDown);
@@ -58,7 +58,7 @@ function LightBox(props: Props) {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [show, handleClose, onPrev, onNext]);
+  }, [show, handleClose, onPrev, onNext, activeIndex, images]);
 
   const handlers = useSwipeable({
     onSwipedLeft: handleSwipeLeft,

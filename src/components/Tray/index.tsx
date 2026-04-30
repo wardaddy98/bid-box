@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { throttle } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import IconButton from '../IconButton';
 import ProductCard, { Product } from '../ProductCard';
@@ -239,17 +240,20 @@ const Tray = (props: Props) => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       const { scrollLeft, clientWidth, scrollWidth } = container;
       setContainerBoundaryReached({
         left: scrollLeft === 0,
         right: scrollLeft + clientWidth >= scrollWidth,
       });
-    };
+    }, 500);
 
     container.addEventListener('scroll', handleScroll);
 
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => {
+      handleScroll.cancel();
+      container.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const scrollLeft = () => {

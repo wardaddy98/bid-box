@@ -1,8 +1,15 @@
+'use client';
+
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import IconButton from '../IconButton';
 import NavButton from '../NavButton';
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  if (pathname.includes('login') || pathname.includes('register')) return <></>;
+
   return (
     <footer className="bg-white border-t-2 border-gray-200">
       <div className="space-y-8 lg:space-y-10 mx-4 py-16 lg:mx-20">

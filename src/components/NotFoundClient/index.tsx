@@ -2,14 +2,16 @@
 
 import Button from '@/components/Button';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import NotFoundAnimationJSON from '../../../public/assets/not_found_animation.json';
+import LottieAnimation from '../LottieAnimation';
 
 const NotFoundClient = () => {
   const router = useRouter();
 
   return (
     <section className="bg-white w-full h-full">
-      <div className="container flex items-center min-h-screen px-6 py-12 mx-auto">
+      <div className="container flex flex-col-reverse justify-end lg:flex-row  lg:items-center lg:justify-between min-h-screen px-6 py-6 lg:py-12 mx-auto">
         <div>
           <p className="text-sm font-semibold text-primary">404 error</p>
           <h1 className="mt-3 text-2xl font-semibold text-gray-800">{`We can’t find that page`}</h1>
@@ -29,6 +31,10 @@ const NotFoundClient = () => {
             </Button>
           </div>
         </div>
+        <LottieAnimation
+          className="mb-4 lg:mb-0 h-64 w-full lg:w-1/2"
+          lottieJson={NotFoundAnimationJSON}
+        />
       </div>
     </section>
   );
