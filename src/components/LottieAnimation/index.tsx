@@ -14,7 +14,7 @@ const LottieAnimation = (props: Props) => {
     autoplay: true,
     animationData: lottieJson,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice',
+      preserveAspectRatio: 'xMidYMid meet',
     },
   };
 

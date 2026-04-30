@@ -4,8 +4,11 @@ import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
 import { ArrowUpTrayIcon, EnvelopeIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+
 const Register = () => {
+  const router = useRouter();
   const [formValues, setFormValues] = useState<{
     userName: string;
     profileImage: string;
@@ -25,11 +28,14 @@ const Register = () => {
   };
 
   return (
-    <section className="w-full max-w-[90vw] mx-auto overflow-hidden bg-white rounded-lg shadow-2xl lg:max-w-4xl border-2 border-gray-200">
+    <section className="w-full max-w-[90vw] mx-auto overflow-hidden bg-white rounded-lg shadow-2xl lg:max-w-2xl border-2 border-gray-200 mt-12">
       <div className="container flex items-center justify-center p-6 mx-auto ">
         <div className="w-full max-w-md">
           <div className="flex justify-center mx-auto border-b-2 border-gray-200 p-2">
-            <div className="relative h-8 sm:h-9 w-full">
+            <div
+              className="relative h-8 sm:h-9 w-full cursor-pointer"
+              onClick={() => router.replace('/')}
+            >
               <Image
                 fill
                 alt="Logo"

@@ -13,6 +13,7 @@ interface breakpoints {
 type breakpoint = keyof breakpoints | 'base';
 
 const getBreakpoint = (): breakpoint => {
+  if (typeof window === 'undefined') return 'base';
   const width = window.innerWidth as number;
   if (width < 640) return 'base';
   if (width < 768) return 'sm';

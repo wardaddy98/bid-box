@@ -1,6 +1,8 @@
 'use client';
 
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import Button from '../Button';
 import IconButton from '../IconButton';
 
 export interface MenuItem {
@@ -12,10 +14,12 @@ export interface MenuItem {
 interface Props {
   children: ReactNode;
   menuItems: MenuItem[];
+  variant: 'icon' | 'text';
+  className?: string;
 }
 
 const Dropdown = (props: Props) => {
-  const { children, menuItems } = props;
+  const { children, menuItems, variant, className = '' } = props;
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -31,11 +35,22 @@ const Dropdown = (props: Props) => {
   }, []);
 
   return (
-    <div ref={ref} className="relative inline-block">
+    <div ref={ref} className={`relative inline-block ${className}`}>
       {/* Toggle button */}
-      <IconButton name="menu" onClick={() => setIsOpen(v => !v)}>
-        {children}
-      </IconButton>
+      {variant === 'icon' ? (
+        <IconButton name="menu" onClick={() => setIsOpen(v => !v)}>
+          {children}
+        </IconButton>
+      ) : (
+        <Button
+          variant="secondary"
+          onClick={() => setIsOpen(v => !v)}
+          endIcon={<ChevronDownIcon className="h-4 w-4" />}
+          className="w-full"
+        >
+          {children}
+        </Button>
+      )}
       {/* Dropdown */}
       <div
         className={`absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md bg-white py-2 shadow-xl transition-all duration-100
@@ -45,7 +60,10 @@ const Dropdown = (props: Props) => {
         {menuItems?.map((menu, idx) => {
           return (
             <div
-              onClick={menu.onClick}
+              onClick={() => {
+                menu.onClick();
+                setIsOpen(false);
+              }}
               className="flex items-center justify-start gap-2 cursor-pointer px-4 py-3 text-sm capitalize text-gray-600 transition-colors duration-300 hover:bg-primary hover:text-white"
               key={idx}
             >

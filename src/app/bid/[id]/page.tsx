@@ -175,8 +175,8 @@ const Bid = () => {
   const { id } = useParams();
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-6 border-2 my-6 lg:mx-32">
-        <div className="group relative block overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-6 my-6 lg:mx-32">
+        <div className="relative block overflow-hidden">
           <IconButton
             name="Wishlist"
             rounded
@@ -288,6 +288,7 @@ const Bid = () => {
         </div>
       </div>
       <Tray heading="Recently Viewed Auctions" />
+      <Tray heading="Related Auctions" />
     </>
   );
 };
