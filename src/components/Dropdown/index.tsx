@@ -64,7 +64,7 @@ const Dropdown = (props: Props) => {
                 menu.onClick();
                 setIsOpen(false);
               }}
-              className="flex items-center justify-start gap-2 cursor-pointer px-4 py-3 text-sm capitalize text-gray-600 transition-colors duration-300 hover:bg-primary hover:text-white"
+              className="flex items-center justify-start gap-2 cursor-pointer px-4 py-3 text-sm capitalize text-gray-600 transition-colors duration-100 hover:bg-primary hover:text-white"
               key={idx}
             >
               {menu?.startIcon && menu.startIcon}
@@ -72,8 +72,6 @@ const Dropdown = (props: Props) => {
             </div>
           );
         })}
-
-        {/* <hr className="my-1 border-gray-200 dark:border-gray-700" /> */}
       </div>
     </div>
   );

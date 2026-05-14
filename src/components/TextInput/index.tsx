@@ -1,9 +1,11 @@
 'use client';
 
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { EyeIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import React, { ReactNode, useState } from 'react';
 import IconButton from '../IconButton';
+import Tooltip from '../Tooltip';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -11,19 +13,35 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   startIcon?: ReactNode;
   type?: 'text' | 'password';
   containerClassName?: string;
+  tooltip?: string;
 }
 const TextInput = (props: Props) => {
-  const { label, extraContent, type = 'text', startIcon, containerClassName = '', ...rest } = props;
+  const {
+    label,
+    extraContent,
+    type = 'text',
+    startIcon,
+    containerClassName = '',
+    tooltip,
+    ...rest
+  } = props;
 
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => setShowPassword(prev => !prev);
   return (
     <div className={containerClassName}>
-      <div className="flex justify-between">
-        <label htmlFor="username" className="block text-sm text-gray-500 font-semibold">
-          {label}
-        </label>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-1 items-center">
+          <label htmlFor="username" className="block text-sm text-gray-500 font-semibold">
+            {label}
+          </label>
+          {tooltip && (
+            <Tooltip content={tooltip}>
+              <InformationCircleIcon className="h-5 w-5 text-gray-500 hover:text-primary" />
+            </Tooltip>
+          )}
+        </div>
         {extraContent && extraContent}
       </div>
 

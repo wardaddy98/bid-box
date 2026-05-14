@@ -5,7 +5,7 @@
   --foreground: #171717;
   --primary: #0187e6;
   --accent: #f2f8fa;
-  --header-height: 56px /* --primary: rgb(120, 157, 188); */;
+  --size-header: 56px /* --primary: rgb(120, 157, 188); */;
 }
 
 @theme inline {
@@ -20,7 +20,7 @@
   --text-heading: 24px;
   --text-heading--line-height: 32px;
 
-  --size-header: var(--header-height);
+  --size-header: var(--size-header);
 }
 
 /* @media (prefers-color-scheme: dark) {

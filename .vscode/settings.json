@@ -44,5 +44,5 @@
 
   "eslint.validate": ["react", "javascript", "typescript", "javascriptreact", "typescriptreact"],
 
-  "cSpell.words": ["Gautam", "swipeable"]
+  "cSpell.words": ["Gautam", "persistor", "swipeable"]
 }
