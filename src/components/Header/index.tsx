@@ -1,21 +1,42 @@
 'use client';
 
-import useBreakpoint from '@/hooks/useBreakpoint';
-import { ArrowLeftEndOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/outline';
+import useIsLoggedIn from '@/hooks/useIsLoggedIn';
+import { getAuthSlice } from '@/redux/slices/auth.slice';
+import { persistor } from '@/redux/store';
+import {
+  ArrowLeftEndOnRectangleIcon,
+  Bars3Icon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import Avatar from '../Avatar';
 import Dropdown, { MenuItem } from '../Dropdown';
 import NavButton from '../NavButton';
 import styles from './index.module.scss';
 
 const Header = () => {
-  const { isBase: findIsBase } = useBreakpoint();
-  const isBase = findIsBase();
+  const { isLoggedIn } = useIsLoggedIn();
+  const router = useRouter();
   const pathname = usePathname();
-  console.log(pathname, 'LKK');
+  const dispatch = useDispatch();
+  const { user } = useSelector(getAuthSlice);
 
-  const menuItems: MenuItem[] = [
+  const handleLogout = () => {
+    dispatch({
+      type: 'RESET_STORE',
+    });
+    persistor.purge();
+  };
+
+  const menuItemsMobile: MenuItem[] = [
+    {
+      label: 'My Profile',
+      startIcon: <UserCircleIcon className="h-4 w-4" />,
+      onClick: () => router.push('/profile'),
+    },
     {
       label: 'About',
       onClick: () => {},
@@ -41,8 +62,21 @@ const Header = () => {
       onClick: () => {},
     },
     {
-      label: 'Sign Out',
-      onClick: () => {},
+      label: 'Log Out',
+      onClick: handleLogout,
+      startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
+    },
+  ];
+
+  const menuItemsDesktop: MenuItem[] = [
+    {
+      label: 'My Profile',
+      startIcon: <UserCircleIcon className="h-4 w-4" />,
+      onClick: () => router.push('/profile'),
+    },
+    {
+      label: 'Log Out',
+      onClick: handleLogout,
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
@@ -50,7 +84,7 @@ const Header = () => {
   if (pathname.includes('login') || pathname.includes('register')) return <></>;
   return (
     <header className={`${styles.main} bg-white shadow-md z-100`}>
-      <div className="w-full px-2 sm:px-6 lg:px-8">
+      <div className="w-full px-2 sm:px-4">
         <div className="flex h-(--size-header) items-center justify-between">
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <Link className="block" href="/">
@@ -100,24 +134,37 @@ const Header = () => {
               </ul>
             </nav>
 
-            <div className="flex items-center gap-4">
-              <div className="sm:flex sm:gap-4">
-                <NavButton href="/login" variant="primary">
-                  Login
-                </NavButton>
-                <div className="hidden sm:flex">
-                  <NavButton href="/register" variant="secondary">
-                    Register
-                  </NavButton>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-4">
+                <div className="p-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
+                  <Avatar imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;" />
+                  {user?.name && <span className="font-semibold text-sm">{user?.name}</span>}
                 </div>
-              </div>
 
-              <div className="block sm:hidden">
-                <Dropdown variant="icon" menuItems={menuItems}>
+                <Dropdown variant="icon" menuItems={menuItemsDesktop}>
                   <Bars3Icon className="h-4 w-4" />
                 </Dropdown>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <div className="sm:flex sm:gap-4">
+                  <NavButton href="/login" variant="primary">
+                    Login
+                  </NavButton>
+                  <div className="hidden sm:flex">
+                    <NavButton href="/register" variant="secondary">
+                      Register
+                    </NavButton>
+                  </div>
+                </div>
+
+                <div className="block sm:hidden">
+                  <Dropdown variant="icon" menuItems={menuItemsMobile}>
+                    <Bars3Icon className="h-4 w-4" />
+                  </Dropdown>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

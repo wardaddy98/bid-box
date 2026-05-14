@@ -3,10 +3,14 @@ import Button from '@/components/Button';
 import LottieAnimation from '@/components/LottieAnimation';
 import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
+import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import GoogleIcon from '@/icons/GoogleIcon';
+import { useLoginMutation } from '@/redux/api/user.api';
+import validateUserInput from '@/utils/validateUserInput';
+import { loginSchema } from '@/validations/user.validation';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoginAnimationJson from '../../../../public/assets/login_animation.json';
 
 interface FormValues {
@@ -16,17 +20,30 @@ interface FormValues {
 
 const Login = () => {
   const router = useRouter();
+  const { isLoggedIn } = useIsLoggedIn();
+
+  const [executeLogin, { isLoading }] = useLoginMutation();
 
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    if (router && isLoggedIn) router.replace('/');
+  }, [isLoggedIn, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSignIn = async () => {
+    const isValidated = validateUserInput(formValues, loginSchema);
+    if (!isValidated) return;
+    await executeLogin(formValues);
   };
 
   return (
@@ -82,11 +99,19 @@ const Login = () => {
               name="password"
               type="password"
               placeholder="********"
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') handleSignIn();
+              }}
             />
           </div>
 
           <div className="mt-6">
-            <Button variant="primary" childrenClassName="text-center" className="w-full">
+            <Button
+              variant="primary"
+              childrenClassName="text-center"
+              className="w-full"
+              onClick={handleSignIn}
+            >
               Sign In
             </Button>
           </div>

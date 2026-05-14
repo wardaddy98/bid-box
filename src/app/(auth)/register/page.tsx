@@ -2,29 +2,52 @@
 import Button from '@/components/Button';
 import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
+import useIsLoggedIn from '@/hooks/useIsLoggedIn';
+import { useRegisterMutation } from '@/redux/api/user.api';
+import { UserRole } from '@/types/user.type';
+import validateUserInput from '@/utils/validateUserInput';
+import { createUserSchema } from '@/validations/user.validation';
 import { ArrowUpTrayIcon, EnvelopeIcon, LockClosedIcon, UserIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Register = () => {
   const router = useRouter();
+  const { isLoggedIn } = useIsLoggedIn();
+  const [triggerRegister, { isLoading }] = useRegisterMutation();
+
   const [formValues, setFormValues] = useState<{
-    userName: string;
-    profileImage: string;
+    name: string;
+    // profileImage: string;
     email: string;
     password: string;
     confirmPassword: string;
   }>({
-    userName: '',
-    profileImage: '',
+    name: '',
+    // profileImage: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
 
+  useEffect(() => {
+    if (router && isLoggedIn) router.replace('/');
+  }, [isLoggedIn, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const handleRegister = async () => {
+    const isValidated = validateUserInput(formValues, createUserSchema);
+    if (!isValidated) return;
+
+    await triggerRegister({
+      email: formValues.email,
+      name: formValues.name,
+      password: formValues.password,
+      role: UserRole.Customer,
+    });
   };
 
   return (
@@ -46,9 +69,9 @@ const Register = () => {
           </div>
 
           <TextInput
-            name="userName"
-            label="User Name"
-            value={formValues.userName}
+            name="name"
+            label="Name"
+            value={formValues.name}
             onChange={handleChange}
             startIcon={<UserIcon className="h-5 w-5" />}
             containerClassName="mt-4"
@@ -57,7 +80,7 @@ const Register = () => {
           <TextInput
             name="profileImage"
             label="Profile Image"
-            value={formValues.profileImage}
+            // value={formValues.profileImage}
             onChange={handleChange}
             startIcon={<ArrowUpTrayIcon className="h-5 w-5" />}
             containerClassName="mt-4"
@@ -72,12 +95,13 @@ const Register = () => {
           />
           <TextInput
             name="password"
-            label="password"
+            label="Password"
             value={formValues.password}
             type="password"
             onChange={handleChange}
             startIcon={<LockClosedIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            tooltip="Password must be 8–16 characters long and include at least one uppercase letter, one number, and one special character."
           />
           <TextInput
             name="confirmPassword"
@@ -90,7 +114,7 @@ const Register = () => {
           />
 
           <div className="mt-6">
-            <Button className="w-full" variant="primary">
+            <Button className="w-full" variant="primary" onClick={handleRegister}>
               Sign Up
             </Button>
 

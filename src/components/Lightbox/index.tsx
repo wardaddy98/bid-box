@@ -1,5 +1,3 @@
-//
-
 'use client';
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
