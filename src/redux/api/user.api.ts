@@ -39,14 +39,7 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
-
-    test: build.query({
-      query: () => ({
-        url: '/user/test',
-        method: 'GET',
-      }),
-    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLazyTestQuery } = userApi;
+export const { useLoginMutation, useRegisterMutation } = userApi;

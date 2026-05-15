@@ -8,7 +8,7 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
-import { RootState } from './store';
+import { handleLogout, RootState } from './store';
 
 const getBaseQuery = fetchBaseQuery({
   baseUrl: constants.API_URL,
@@ -16,9 +16,9 @@ const getBaseQuery = fetchBaseQuery({
   credentials: 'include',
   prepareHeaders(headers, api) {
     const authToken = (api.getState() as RootState).auth?.authToken;
+    headers.set('Accept', 'application/json');
     if (authToken) {
       headers.set('Authorization', `Bearer ${authToken}`);
-      headers.set('Accept', 'application/json');
     }
     return headers;
   },
@@ -30,22 +30,46 @@ const dynamicBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
   api,
   extraOptions,
 ) => {
-  const result = await getBaseQuery(args, api, extraOptions);
+  //Result intercepted to perform custom logic - toast, refresh token flow, logout
+  let result = await getBaseQuery(args, api, extraOptions);
+
+  if (result?.error?.status == 401) {
+    //to get new access token from refresh token
+    const refreshResult = await getBaseQuery(
+      {
+        url: '/user/refresh',
+        method: 'GET',
+      },
+      api,
+      extraOptions,
+    );
+
+    const refreshData = refreshResult.data as ApiResponse<{ token: string }>;
+
+    if (refreshResult.meta?.response?.status === 200 && refreshData?.body?.token) {
+      //using auth slice reducers will cause circular dependency, so custom action is used
+      api.dispatch({
+        type: 'SET_AUTH_TOKEN',
+        payload: refreshData?.body?.token,
+      });
+
+      result = await getBaseQuery(args, api, extraOptions);
+    } else {
+      // to handle 403 error after 401
+      handleLogout(api.dispatch);
+    }
+  }
+
+  //to handle direct 403
+  if (result.error?.status == 403) {
+    handleLogout(api.dispatch);
+  }
 
   //global catch all unsuccessful api error and show toast
   if (result?.error) {
     const errorData = result.error.data as ApiResponse<unknown>;
     const message = errorData?.message || 'Unexpected error!';
     toast.error(message);
-  }
-
-  //   SG_FIX
-  //   if(result.status === 401){
-  //     get access token from refresh token and retry request
-  //   }
-
-  if (result.error?.status == 403) {
-    api.dispatch({ type: 'RESET_STORE' });
   }
 
   //global display success toast for status 200

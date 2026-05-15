@@ -6,6 +6,11 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
+  {
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
