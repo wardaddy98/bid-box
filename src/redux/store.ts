@@ -22,11 +22,23 @@ export const combinedReducer = combineReducers({
 //root reducer is defined separately as a wrapper to combineReducers to implement RESET_STORE functionality
 export const rootReducer = (
   rootState: ReturnType<typeof combinedReducer> | undefined,
-  action: Action,
+  action: Action & { payload: unknown },
 ) => {
+  // Redux reducers automatically initialize default state when state is undefined
   if (action.type === 'RESET_STORE') {
-    // Redux reducers initialize default state when state is undefined
     rootState = undefined;
+  }
+
+  if (action.type === 'SET_AUTH_TOKEN' && rootState) {
+    rootState = {
+      ...rootState,
+
+      [AUTH_SLICE_KEY]: {
+        ...rootState[AUTH_SLICE_KEY],
+        authToken: action.payload as string,
+        user: rootState[AUTH_SLICE_KEY].user,
+      },
+    };
   }
 
   return combinedReducer(rootState, action);
@@ -58,4 +70,9 @@ setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = ReturnType<typeof store.dispatch>;
+export type AppDispatch = typeof store.dispatch;
+
+export const handleLogout = async (dispatch: AppDispatch) => {
+  dispatch({ type: 'RESET_STORE' });
+  await persistor.purge();
+};

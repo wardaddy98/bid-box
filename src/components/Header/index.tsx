@@ -2,7 +2,7 @@
 
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import { getAuthSlice } from '@/redux/slices/auth.slice';
-import { persistor } from '@/redux/store';
+import { handleLogout } from '@/redux/store';
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
@@ -20,16 +20,9 @@ import styles from './index.module.scss';
 const Header = () => {
   const { isLoggedIn } = useIsLoggedIn();
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useDispatch();
+  const pathname = usePathname();
   const { user } = useSelector(getAuthSlice);
-
-  const handleLogout = () => {
-    dispatch({
-      type: 'RESET_STORE',
-    });
-    persistor.purge();
-  };
 
   const menuItemsMobile: MenuItem[] = [
     {
@@ -63,7 +56,7 @@ const Header = () => {
     },
     {
       label: 'Log Out',
-      onClick: handleLogout,
+      onClick: () => handleLogout(dispatch),
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
@@ -76,7 +69,7 @@ const Header = () => {
     },
     {
       label: 'Log Out',
-      onClick: handleLogout,
+      onClick: () => handleLogout(dispatch),
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
