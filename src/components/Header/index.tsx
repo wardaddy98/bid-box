@@ -1,8 +1,11 @@
 'use client';
 
+import useBreakpoint from '@/hooks/useBreakpoint';
+import useIsAdmin from '@/hooks/useIsAdmin';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import { getAuthSlice } from '@/redux/slices/auth.slice';
 import { handleLogout } from '@/redux/store';
+import { UserRole } from '@/types/user.type';
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
@@ -23,36 +26,15 @@ const Header = () => {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const { user } = useSelector(getAuthSlice);
+  const { isAdmin } = useIsAdmin();
+  const { isBase: findIsBase } = useBreakpoint();
+  const isBase = findIsBase();
 
-  const menuItemsMobile: MenuItem[] = [
+  const menuItems: MenuItem[] = [
     {
       label: 'My Profile',
       startIcon: <UserCircleIcon className="h-4 w-4" />,
       onClick: () => router.push('/profile'),
-    },
-    {
-      label: 'About',
-      onClick: () => {},
-    },
-    {
-      label: 'Careers',
-      onClick: () => {},
-    },
-    {
-      label: 'History',
-      onClick: () => {},
-    },
-    {
-      label: 'Blog',
-      onClick: () => {},
-    },
-    {
-      label: 'Project',
-      onClick: () => {},
-    },
-    {
-      label: 'Career',
-      onClick: () => {},
     },
     {
       label: 'Log Out',
@@ -61,15 +43,23 @@ const Header = () => {
     },
   ];
 
-  const menuItemsDesktop: MenuItem[] = [
+  const menuItemsMobileAdmin: MenuItem[] = [
     {
-      label: 'My Profile',
-      startIcon: <UserCircleIcon className="h-4 w-4" />,
-      onClick: () => router.push('/profile'),
+      label: 'Products',
+      onClick: () => router.push('/products'),
+      startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
     {
-      label: 'Log Out',
-      onClick: () => handleLogout(dispatch),
+      label: 'Auctions',
+      onClick: () => router.push('/auctions'),
+      startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
+    },
+  ];
+
+  const menuItemsMobileCustomer: MenuItem[] = [
+    {
+      label: 'Auctions',
+      onClick: () => router.push('/auctions'),
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
@@ -89,73 +79,59 @@ const Header = () => {
           <div className="md:flex md:items-center md:gap-12">
             <nav aria-label="Global" className="hidden md:block">
               <ul className="flex items-center gap-6 text-sm">
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    About
-                  </NavButton>
-                </li>
-
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    Careers
-                  </NavButton>
-                </li>
-
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    History
-                  </NavButton>
-                </li>
-
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    Services
-                  </NavButton>
-                </li>
-
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    Projects
-                  </NavButton>
-                </li>
-
-                <li>
-                  <NavButton href="#" variant="text" className="px-0 py-0">
-                    Blog
-                  </NavButton>
-                </li>
+                {isAdmin ? (
+                  <>
+                    <li>
+                      <NavButton href="/products" variant="text" className="px-0 py-0">
+                        Products
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton href="/auctions" variant="text" className="px-0 py-0">
+                        Auctions
+                      </NavButton>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <NavButton href="/auctions" variant="text" className="px-0 py-0">
+                        Auctions
+                      </NavButton>
+                    </li>
+                  </>
+                )}
               </ul>
             </nav>
 
-            {isLoggedIn ? (
+            {isLoggedIn && (
               <div className="flex items-center gap-4">
                 <div className="p-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
                   <Avatar imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;" />
-                  {user?.name && <span className="font-semibold text-sm">{user?.name}</span>}
-                </div>
-
-                <Dropdown variant="icon" menuItems={menuItemsDesktop}>
-                  <Bars3Icon className="h-4 w-4" />
-                </Dropdown>
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <div className="sm:flex sm:gap-4">
-                  <NavButton href="/login" variant="primary">
-                    Login
-                  </NavButton>
-                  <div className="hidden sm:flex">
-                    <NavButton href="/register" variant="secondary">
-                      Register
-                    </NavButton>
+                  <div className="flex flex-col items-center justify-center">
+                    {user?.name && (
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="inline-block w-full font-semibold text-sm">
+                          {user?.name}
+                        </span>
+                        {user?.role === UserRole.Admin && (
+                          <span className="text-xs font-semibold text-gray-500">(Admin)</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="block sm:hidden">
-                  <Dropdown variant="icon" menuItems={menuItemsMobile}>
-                    <Bars3Icon className="h-4 w-4" />
-                  </Dropdown>
-                </div>
+                <Dropdown
+                  variant="icon"
+                  menuItems={[
+                    ...(isBase && !isAdmin ? menuItemsMobileCustomer : []),
+                    ...(isBase && isAdmin ? menuItemsMobileAdmin : []),
+                    ...menuItems,
+                  ]}
+                >
+                  <Bars3Icon className="h-4 w-4" />
+                </Dropdown>
               </div>
             )}
           </div>

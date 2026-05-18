@@ -72,11 +72,11 @@ const dynamicBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
     toast.error(message);
   }
 
-  //global display success toast for status 200
+  //global display success toast for status 200 , only if message sent from backend, for get requests no message is sent from backend
   if (result?.meta?.response?.status === 200) {
     const successData = result?.data as ApiResponse<unknown>;
-    const message = successData?.message || 'Success!';
-    toast.success(message);
+    const message = successData?.message;
+    if (message) toast.success(message);
   }
 
   return result;

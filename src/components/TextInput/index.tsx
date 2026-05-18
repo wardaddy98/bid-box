@@ -30,9 +30,11 @@ const TextInput = (props: Props) => {
 
   const toggleShowPassword = () => setShowPassword(prev => !prev);
   return (
-    <div className={containerClassName}>
+    <div
+      className={`${containerClassName} ${rest?.disabled && 'pointer-events-none cursor-none opacity-40'}`}
+    >
       <div className="flex justify-between items-center">
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-1 items-center mb-1">
           <label htmlFor="username" className="block text-sm text-gray-500 font-semibold">
             {label}
           </label>
@@ -45,7 +47,7 @@ const TextInput = (props: Props) => {
         {extraContent && extraContent}
       </div>
 
-      <div className="mt-1 relative flex items-center">
+      <div className="relative flex items-center">
         {type === 'password' && (
           <IconButton
             naked

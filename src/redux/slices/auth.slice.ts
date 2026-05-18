@@ -8,11 +8,13 @@ export const AUTH_SLICE_KEY = 'auth';
 export interface IAuthSlice {
   user: IUser | null;
   authToken: string | null;
+  isLoading: boolean;
 }
 
 const initialState: IAuthSlice = {
   user: null,
   authToken: null,
+  isLoading: false,
 };
 
 export const authSlice = createSlice({
@@ -31,6 +33,9 @@ export const authSlice = createSlice({
     setAuthToken: (state, { payload }: PayloadAction<string>) => {
       state.authToken = payload;
     },
+    setIsLoading: (state, { payload }: PayloadAction<boolean>) => {
+      state.isLoading = payload;
+    },
   },
   extraReducers(builder) {
     builder.addMatcher(userApi.endpoints.login.matchFulfilled, (state, { payload }) => {
@@ -45,6 +50,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setUser, setAuthState, setAuthToken } = authSlice.actions;
+export const { setUser, setAuthState, setAuthToken, setIsLoading } = authSlice.actions;
 export const getAuthSlice = (rootState: RootState): IAuthSlice => rootState[AUTH_SLICE_KEY];
 export default authSlice.reducer;

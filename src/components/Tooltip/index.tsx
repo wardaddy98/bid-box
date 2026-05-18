@@ -58,7 +58,7 @@ const Tooltip = ({ content, children }: TooltipProps) => {
         createPortal(
           <div
             role="tooltip"
-            className="fixed z-50 max-w-[20vw] rounded bg-black px-3 py-2 text-sm text-white shadow-lg wrap-break-word"
+            className="fixed z-210 max-w-[20vw] rounded bg-black px-3 py-2 text-sm text-white shadow-lg wrap-break-word"
             style={getPosition()}
           >
             {content}

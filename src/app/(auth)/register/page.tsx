@@ -2,6 +2,7 @@
 import Button from '@/components/Button';
 import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
+import Toggle from '@/components/Toggle';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import { useRegisterMutation } from '@/redux/api/user.api';
 import { UserRole } from '@/types/user.type';
@@ -16,6 +17,7 @@ const Register = () => {
   const router = useRouter();
   const { isLoggedIn } = useIsLoggedIn();
   const [triggerRegister, { isLoading }] = useRegisterMutation();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [formValues, setFormValues] = useState<{
     name: string;
@@ -23,12 +25,14 @@ const Register = () => {
     email: string;
     password: string;
     confirmPassword: string;
+    adminCode?: string;
   }>({
     name: '',
     // profileImage: '',
     email: '',
     password: '',
     confirmPassword: '',
+    adminCode: '',
   });
 
   useEffect(() => {
@@ -46,7 +50,9 @@ const Register = () => {
       email: formValues.email,
       name: formValues.name,
       password: formValues.password,
-      role: UserRole.Customer,
+      ...(isAdmin
+        ? { role: UserRole.Admin, adminCode: formValues.adminCode }
+        : { role: UserRole.Customer }),
     });
   };
 
@@ -68,6 +74,14 @@ const Register = () => {
             </div>
           </div>
 
+          <div className="flex justify-end mt-4">
+            <Toggle
+              checked={isAdmin}
+              onChange={e => setIsAdmin(e.target.checked)}
+              label="Is Admin?"
+              disabled={isLoading}
+            />
+          </div>
           <TextInput
             name="name"
             label="Name"
@@ -75,6 +89,7 @@ const Register = () => {
             onChange={handleChange}
             startIcon={<UserIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            disabled={isLoading}
           />
 
           <TextInput
@@ -84,6 +99,7 @@ const Register = () => {
             onChange={handleChange}
             startIcon={<ArrowUpTrayIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            disabled={isLoading}
           />
           <TextInput
             name="email"
@@ -92,6 +108,7 @@ const Register = () => {
             onChange={handleChange}
             startIcon={<EnvelopeIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            disabled={isLoading}
           />
           <TextInput
             name="password"
@@ -101,6 +118,7 @@ const Register = () => {
             onChange={handleChange}
             startIcon={<LockClosedIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            disabled={isLoading}
             tooltip="Password must be 8–16 characters long and include at least one uppercase letter, one number, and one special character."
           />
           <TextInput
@@ -111,10 +129,38 @@ const Register = () => {
             onChange={handleChange}
             startIcon={<LockClosedIcon className="h-5 w-5" />}
             containerClassName="mt-4"
+            disabled={isLoading}
           />
+          {isAdmin && (
+            <TextInput
+              name="adminCode"
+              label="Admin Code"
+              type="password"
+              value={formValues.adminCode}
+              onChange={handleChange}
+              startIcon={<LockClosedIcon className="h-5 w-5" />}
+              containerClassName="mt-4"
+              minLength={4}
+              maxLength={4}
+              onKeyDown={e => {
+                const allowed = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+                if (allowed.includes(e.key)) return;
+
+                if (!/^\d$/.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              disabled={isLoading}
+            />
+          )}
 
           <div className="mt-6">
-            <Button className="w-full" variant="primary" onClick={handleRegister}>
+            <Button
+              disabled={isLoading}
+              className="w-full"
+              variant="primary"
+              onClick={handleRegister}
+            >
               Sign Up
             </Button>
 
