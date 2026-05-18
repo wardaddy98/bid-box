@@ -1,14 +1,35 @@
 interface Props {
   className?: string;
   textClassName?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'x-small' | 'small' | 'medium' | 'large';
+  color?: 'primary' | 'white' | 'black';
+  spinnerOnly?: boolean;
 }
 
-const Spinner = ({ className, textClassName, size = 'small' }: Props) => {
+const sizeClasses = {
+  'x-small': 'size-5',
+  small: 'size-6',
+  medium: 'size-8',
+  large: 'size-12',
+};
+
+const colorClasses = {
+  primary: 'text-primary',
+  white: 'text-white',
+  black: 'text-black',
+};
+
+const Spinner = ({
+  className,
+  textClassName,
+  size = 'small',
+  color = 'primary',
+  spinnerOnly = false,
+}: Props) => {
   return (
     <div className={`inline-flex items-center gap-3 ${className}`}>
       <svg
-        className={`size-${size === 'small' ? '6' : size === 'medium' ? '8' : '12'} animate-spin text-primary`}
+        className={`${sizeClasses[size]} ${colorClasses[color]} animate-spin  `}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -29,7 +50,7 @@ const Spinner = ({ className, textClassName, size = 'small' }: Props) => {
         ></path>
       </svg>
 
-      <p className={`text-black font-medium ${textClassName}`}>Loading...</p>
+      {!spinnerOnly && <p className={`text-black font-medium ${textClassName}`}>Loading...</p>}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ButtonHTMLAttributes, ReactNode } from 'react';
+import Spinner from '../Spinner';
 
 type IconProps =
   | { startIcon: ReactNode; endIcon?: never }
@@ -13,6 +14,7 @@ interface BaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary' | 'text';
   disabled?: boolean;
   childrenClassName?: string;
+  isLoading?: boolean;
 }
 
 type Props = BaseProps & IconProps;
@@ -25,6 +27,7 @@ const Button = (props: Props) => {
     endIcon,
     variant,
     childrenClassName = '',
+    isLoading,
     ...rest
   } = props;
   return (
@@ -38,13 +41,14 @@ const Button = (props: Props) => {
         rest?.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:scale-105',
         // : 'cursor-pointer hover:scale-105 hover:underline',
       )}
+      disabled={rest?.disabled || isLoading}
     >
       <div
         className={`flex items-center gap-2 justify-center ${(startIcon || endIcon) && 'justify-start'}`}
       >
         {startIcon && startIcon}
         <span className={childrenClassName}>{children}</span>
-        {endIcon && endIcon}
+        {isLoading ? <Spinner color="white" size="x-small" spinnerOnly /> : endIcon && endIcon}
       </div>
     </button>
   );

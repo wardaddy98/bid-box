@@ -16,10 +16,25 @@ export const createUserSchema = z
         'Password must contain uppercase, number, symbol and be 8-16 characters!',
       ),
     confirmPassword: z.string().min(1, 'Confirm password is required!'),
+    adminCode: z.string().length(4, 'Code should be 4 digits').optional(),
+    isAdmin: z.boolean().optional(),
     // profileImage: z.string().optional(),
     // googleId: z.string().optional(),
   })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match!',
-    path: ['confirmPassword'],
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Passwords do not match!',
+      });
+    }
+
+    if (data.isAdmin && !data.adminCode) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['adminCode'],
+        message: 'Admin code is required for admin users!',
+      });
+    }
   });

@@ -1,14 +1,16 @@
 'use client';
 
+import useIsAdmin from '@/hooks/useIsAdmin';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IconButton from '../IconButton';
 import NavButton from '../NavButton';
 
 const Footer = () => {
+  const { isAdmin } = useIsAdmin();
   const pathname = usePathname();
 
-  if (pathname.includes('login') || pathname.includes('register')) return <></>;
+  if (pathname.includes('login') || pathname.includes('register') || isAdmin) return <></>;
 
   return (
     <footer className="bg-white border-t-2 border-gray-200">

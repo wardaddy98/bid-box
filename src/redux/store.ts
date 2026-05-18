@@ -13,10 +13,12 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { rootApi } from './rootApi';
 import AuthReducer, { AUTH_SLICE_KEY } from './slices/auth.slice';
+import ProductReducer, { PRODUCT_SLICE_KEY } from './slices/product.slice';
 
 export const combinedReducer = combineReducers({
   [rootApi.reducerPath]: rootApi.reducer,
   [AUTH_SLICE_KEY]: AuthReducer,
+  [PRODUCT_SLICE_KEY]: ProductReducer,
 });
 
 //root reducer is defined separately as a wrapper to combineReducers to implement RESET_STORE functionality

@@ -4,7 +4,6 @@ import Avatar from '../Avatar';
 import Button from '../Button';
 import Divider from '../Divider';
 import Modal from '../Modal';
-import Pagination from '../Pagination';
 
 interface RecentBidsProps {
   test?: string;
@@ -86,7 +85,7 @@ const RecentBids = (props: RecentBidsProps) => {
 
             <Divider className="my-4" />
 
-            <Pagination className="justify-center" />
+            {/* <Pagination className="justify-center" /> */}
           </div>
         </Modal>
       )}

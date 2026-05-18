@@ -17,6 +17,7 @@ export interface IRegisterPayload {
   email: string;
   password: string;
   role: UserRole;
+  adminCode?: string;
 }
 
 export type IRegisterResponse = ILoginResponse;
