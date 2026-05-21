@@ -9,7 +9,7 @@ import {
   useCreateProductMutation,
   useLazyGetAllProductsQuery,
 } from '@/redux/api/product.api';
-import { ProductCategoryEnum } from '@/types/product.type';
+import { IProduct, ProductCategoryEnum } from '@/types/product.type';
 import validateUserInput from '@/utils/validateUserInput';
 import { createProductSchema } from '@/validations/product.validation';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -17,6 +17,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 
 import Divider from '@/components/Divider';
+import EmptyValuePlaceholder from '@/components/EmptyValuePlaceholder';
 import Pagination from '@/components/Pagination';
 import ProductCardAdmin from '@/components/ProductCardAdmin';
 import useDebounce from '@/hooks/useDebounce';
@@ -150,15 +151,19 @@ const Products = () => {
           />
         </div>
 
-        <div className="mt-8 grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-6 lg:gap-14">
-          {products.map((product, idx) => (
-            <ProductCardAdmin
-              key={idx}
-              product={product}
-              handleEdit={() => setEditProductId(product._id)}
-            />
-          ))}
-        </div>
+        {products?.length > 0 ? (
+          <div className="mt-8 grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-6 lg:gap-14">
+            {products.map((product: IProduct, idx) => (
+              <ProductCardAdmin
+                key={idx}
+                product={product}
+                handleEdit={() => setEditProductId(product._id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyValuePlaceholder />
+        )}
 
         <Divider className="my-4" />
         <div className="w-full justify-center">

@@ -90,7 +90,7 @@ const CreateProductDrawer = (props: CreateProductDrawerProps) => {
         value={
           touched?.sellingPrice
             ? formValues.sellingPrice
-            : `₹ ${Number(formValues.sellingPrice).toLocaleString('en-IN')}`
+            : `₹ ${Number(formValues.sellingPrice || 0).toLocaleString('en-IN')}`
         }
         onFocus={e => setTouched(prev => ({ ...prev, [e.target.name]: true }))}
         onBlur={e => setTouched(prev => ({ ...prev, [e.target.name]: false }))}

@@ -16,7 +16,7 @@ const initialState: IProductSlice = {
   pagination: {
     currentPage: 1,
     totalCount: 0,
-    totalPages: 0,
+    totalPages: 1,
   },
 };
 

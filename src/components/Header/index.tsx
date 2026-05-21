@@ -64,6 +64,13 @@ const Header = () => {
     },
   ];
 
+  const isActive = (link: string): boolean => {
+    if (link === 'home') {
+      return pathname === '/';
+    }
+    return pathname.includes(link.toLowerCase());
+  };
+
   if (pathname.includes('login') || pathname.includes('register')) return <></>;
   return (
     <header className={`${styles.main} bg-white shadow-md z-100`}>
@@ -77,17 +84,37 @@ const Header = () => {
           </div>
 
           <div className="md:flex md:items-center md:gap-12">
-            <nav aria-label="Global" className="hidden md:block">
+            <nav aria-label="Global" className="hidden sm:block">
               <ul className="flex items-center gap-6 text-sm">
                 {isAdmin ? (
                   <>
                     <li>
-                      <NavButton href="/products" variant="text" className="px-0 py-0">
+                      <NavButton
+                        active={isActive('home')}
+                        href="/"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
+                        Home
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton
+                        active={isActive('product')}
+                        href="/products"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
                         Products
                       </NavButton>
                     </li>
                     <li>
-                      <NavButton href="/auctions" variant="text" className="px-0 py-0">
+                      <NavButton
+                        active={isActive('auction')}
+                        href="/auctions"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
                         Auctions
                       </NavButton>
                     </li>
@@ -95,7 +122,22 @@ const Header = () => {
                 ) : (
                   <>
                     <li>
-                      <NavButton href="/auctions" variant="text" className="px-0 py-0">
+                      <NavButton
+                        active={isActive('home')}
+                        href="/"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
+                        Home
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton
+                        active={isActive('auction')}
+                        href="/auctions"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
                         Auctions
                       </NavButton>
                     </li>

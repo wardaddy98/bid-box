@@ -1,7 +1,7 @@
 import { ChartBarSquareIcon, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import React from 'react';
 
-const test: StatCardProps[] = [
+const stats: StatCardProps[] = [
   {
     icon: <HeartIconSolid className="h-12 w-12 text-red-500" />,
     label: 'Total Revenue',
@@ -57,7 +57,7 @@ const AdminView = () => {
         <ChartBarSquareIcon className="h-8 w-8 text-primary" />
       </div>
       <div className="p-8 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-        {test?.map((e, idx) => (
+        {stats?.map((e, idx) => (
           <StatCard key={idx} icon={e.icon} label={e.label} value={e.value} />
         ))}
       </div>

@@ -14,6 +14,7 @@ export interface ICreateProductPayload {
 export type ICreateProductResponse = ApiResponse<{ product: IProduct }>;
 
 export type IGetAllProductsResponse = PaginatedApiResponse<IProduct[]>;
+export type IGetAllProductsUnpaginatedResponse = ApiResponse<{ data: IProduct[] }>;
 
 export interface IGetAllProductsQueryString {
   page?: number;
@@ -37,8 +38,18 @@ export const productApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getAllProductsUnPaginated: build.query<IGetAllProductsUnpaginatedResponse, {}>({
+      query: () => ({
+        url: '/product/raw',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
-export const { useCreateProductMutation, useGetAllProductsQuery, useLazyGetAllProductsQuery } =
-  productApi;
+export const {
+  useCreateProductMutation,
+  useGetAllProductsQuery,
+  useLazyGetAllProductsQuery,
+  useGetAllProductsUnPaginatedQuery,
+} = productApi;

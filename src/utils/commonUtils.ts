@@ -9,3 +9,12 @@ export const generateSelectOptionsFromEnum = (e: Record<string, string>): Select
 
 export const formatAmount = (amount: unknown): string =>
   '₹ ' + Number(amount || 0).toLocaleString('en-IN');
+
+export const isoDateToReadableFormat = (isoString: string) =>
+  new Date(isoString).toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
