@@ -12,7 +12,6 @@ export interface IAuction {
   auctionId: string;
   product: IProduct | string;
   startingBid: number;
-  bidsPlaced: (IBid | string)[];
   status: AuctionStatusEnum;
   liveOn: Date;
 }
@@ -20,4 +19,8 @@ export interface IAuction {
 export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> {
   product: IProduct;
   liveOn: string;
+}
+
+export interface ICurrentAuction extends IPopulatedAuction {
+  bids: IBid[];
 }

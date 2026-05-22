@@ -11,14 +11,14 @@ interface Props {
 
 const ProductCardAdmin = ({ product, handleEdit }: Props) => {
   return (
-    <div className="bg-white  border-gray-200 rounded-sm hover:scale-102 transition-transform duration-100 ease-out cursor-pointer">
+    <div className="bg-white shadow-sm border border-gray-200  hover:-translate-y-1 hover:shadow-lg transition-transform duration-100 ease-out cursor-pointer">
       <div className="w-full aspect-square relative">
         <Image src={product?.productImages?.[0]} alt="product" fill className="object-fill" />
         <IconButton onClick={handleEdit} name="edit" rounded className="absolute top-2 right-2">
           <PencilIcon className="h-4 w-4" />
         </IconButton>
       </div>
-      <div className="py-2">
+      <div className="py-2 px-3">
         <span className="block text-lg font-semibold">{product.title}</span>
         <span className="block text-sm font-semibold text-gray-500">{product?.productId}</span>
         <div className="flex items-center justify-between">

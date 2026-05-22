@@ -47,9 +47,22 @@ export const authSlice = createSlice({
       state.authToken = payload?.body?.token ?? null;
       state.user = payload?.body?.user ?? null;
     });
+
+    builder.addMatcher(userApi.endpoints.addBookmark.matchFulfilled, (state, { payload }) => {
+      if (state.user && payload?.body?.data?.favoriteAuctions) {
+        state.user.favoriteAuctions = payload.body?.data.favoriteAuctions;
+      }
+    });
+
+    builder.addMatcher(userApi.endpoints.removeBookmark.matchFulfilled, (state, { payload }) => {
+      if (state.user && payload?.body?.data?.favoriteAuctions) {
+        state.user.favoriteAuctions = payload.body?.data.favoriteAuctions;
+      }
+    });
   },
 });
 
 export const { setUser, setAuthState, setAuthToken, setIsLoading } = authSlice.actions;
 export const getAuthSlice = (rootState: RootState): IAuthSlice => rootState[AUTH_SLICE_KEY];
+export const getUser = (rootState: RootState) => getAuthSlice(rootState).user;
 export default authSlice.reducer;

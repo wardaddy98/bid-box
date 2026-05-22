@@ -4,8 +4,8 @@ import useBreakpoint from '@/hooks/useBreakpoint';
 import useIsAdmin from '@/hooks/useIsAdmin';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import { getAuthSlice } from '@/redux/slices/auth.slice';
-import { handleLogout } from '@/redux/store';
 import { UserRole } from '@/types/user.type';
+import { logout } from '@/utils/authUtils';
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
@@ -38,7 +38,7 @@ const Header = () => {
     },
     {
       label: 'Log Out',
-      onClick: () => handleLogout(dispatch),
+      onClick: () => dispatch(logout()),
       startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
     },
   ];
@@ -133,12 +133,32 @@ const Header = () => {
                     </li>
                     <li>
                       <NavButton
-                        active={isActive('auction')}
-                        href="/auctions"
+                        active={isActive('bid')}
+                        href="/bid"
                         variant="text"
                         className="px-0 py-0"
                       >
-                        Auctions
+                        Get Bids
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton
+                        active={isActive('info')}
+                        href="/info"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
+                        How it works?
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton
+                        active={isActive('winners')}
+                        href="/winners"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
+                        Winners
                       </NavButton>
                     </li>
                   </>
@@ -147,8 +167,8 @@ const Header = () => {
             </nav>
 
             {isLoggedIn && (
-              <div className="flex items-center gap-4">
-                <div className="p-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
+              <div className="flex items-center gap-8">
+                <div className="px-4 py-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
                   <Avatar imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;" />
                   <div className="flex flex-col items-center justify-center">
                     {user?.name && (
@@ -156,9 +176,11 @@ const Header = () => {
                         <span className="inline-block w-full font-semibold text-sm">
                           {user?.name}
                         </span>
-                        {user?.role === UserRole.Admin && (
-                          <span className="text-xs font-semibold text-gray-500">(Admin)</span>
-                        )}
+                        <span className="text-xs font-semibold text-gray-500">
+                          {user?.role === UserRole.Admin
+                            ? `(Admin)`
+                            : `Bid Wallet - ${user?.bidsBalance}`}
+                        </span>
                       </div>
                     )}
                   </div>

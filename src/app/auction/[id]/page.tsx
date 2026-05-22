@@ -12,9 +12,16 @@ import RecentBids from '@/components/RecentBids';
 import Review from '@/components/Review';
 import SellerDetails from '@/components/SellerDetails';
 import Tray from '@/components/Tray';
+import { useGetSingleAuctionQuery } from '@/redux/api/auctions.api';
+import { getCurrentAuction } from '@/redux/slices/auction.slice';
+import { getUser, setIsLoading } from '@/redux/slices/auth.slice';
 // import { HeartIcon as HeartIconOutline} from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { useAddBookmarkMutation, useRemoveBookmarkMutation } from '@/redux/api/user.api';
+import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { useParams } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const images = [
   'https://images.unsplash.com/photo-1628202926206-c63a34b1618f?auto=format&amp;fit=crop&amp;q=80&amp;w=1160',
@@ -173,42 +180,69 @@ const description = `
 
 const Bid = () => {
   const { id } = useParams();
+
+  const { isFetching } = useGetSingleAuctionQuery(
+    {
+      auctionId: id as string,
+    },
+    { skip: !id, refetchOnFocus: true },
+  );
+  const [triggerAddBookmark, { isLoading: addBookmarkLoading }] = useAddBookmarkMutation();
+  const [triggerRemoveBookmark, { isLoading: removeBookmarkLoading }] = useRemoveBookmarkMutation();
+
+  const user = useSelector(getUser);
+
+  const dispatch = useDispatch();
+  const currentAuction = useSelector(getCurrentAuction);
+
+  useEffect(() => {
+    if (!dispatch) return;
+    dispatch(setIsLoading(isFetching));
+  }, [dispatch, isFetching]);
+
+  const isBookmarked = useMemo(() => {
+    return user?.favoriteAuctions?.includes(currentAuction?._id ?? '');
+  }, [user, currentAuction]);
+
+  const handleAddBookmark = async () => {
+    await triggerAddBookmark({ auctionId: currentAuction?.auctionId ?? '' });
+  };
+
+  const handleRemoveBookmark = async () => {
+    await triggerRemoveBookmark({ auctionId: currentAuction?.auctionId ?? '' });
+  };
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-6 my-6 lg:mx-32">
         <div className="relative block overflow-hidden">
           <IconButton
-            name="Wishlist"
+            onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
+            name="bookmark"
             rounded
-            className="absolute right-2 top-2 lg:right-4 lg:top-4 z-10 color"
+            className={`absolute top-2 right-2 z-10`}
           >
-            <HeartIconSolid className="h-4 w-4 text-red-500" />
+            {isBookmarked ? (
+              <BookmarkIconSolid className="h-4 w-4" />
+            ) : (
+              <BookmarkIconOutline className="h-4 w-4" />
+            )}
           </IconButton>
 
-          <Carousel images={images} imageContainerClassName="h-80 lg:h-100" />
+          <Carousel
+            images={currentAuction?.product?.productImages ?? []}
+            imageContainerClassName="h-80 lg:h-100"
+          />
 
           <div className="mt-4 relative bg-white">
             <h1 className="text-lg lg:text-heading font-semibold px-3 lg:px-6">
-              Nintendo Switch 2 Console + The Bolvaint Alaric Automatic Watch - Noir in Black + Veho
-              - M3 Bluetooth Wireless Speaker
+              {currentAuction?.product?.title ?? ''}
             </h1>
 
             <div className="mt-4 flex flex-wrap gap-2 items-center px-3 lg:px-6">
-              <Badge onClick={() => {}} text="Test" icon={<HeartIconSolid className="w-4 h-4" />} />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
-              <Badge text="Test" />
+              {/* <Badge onClick={() => {}} text="Test" icon={<HeartIconSolid className="w-4 h-4" />} /> */}
+              <Badge text={`Auction ID- ${currentAuction?.auctionId ?? ''}`} />
+              <Badge text={`Product ID- ${currentAuction?.product?.productId ?? ''}`} />
             </div>
 
             <div className="mt-4 block lg:hidden">
@@ -218,7 +252,7 @@ const Bid = () => {
               <SellerDetails />
             </div>
 
-            <ProductDescription description={description} />
+            <ProductDescription description={currentAuction?.product?.description ?? ''} />
 
             <div className="mt-6 flex items-center justify-between lg:border-b-2 border-gray-200 px-3 lg:px-6 pb-6 ">
               <div className="w-1/2">

@@ -18,17 +18,21 @@ const Hero = () => {
           </h1>
 
           <p className="mt-4 text-lg font-semibold text-gray-500">
-            Bid Box brings buyers and sellers together through transparent auctions.
+            Compete in transparent live auctions and win premium products before the timer runs out.
           </p>
 
           <div className="mt-4 flex gap-4 sm:mt-6">
-            <Button variant="primary" onClick={() => router.push('/payment?type=bids')}>
+            <Button variant="primary" onClick={() => router.push('/bid')}>
               Get Bids
             </Button>
             <Button variant="secondary" onClick={() => router.push('/winners')}>
               View Winners
             </Button>
           </div>
+
+          <Button variant="text" className="mt-8" onClick={() => router.push('/info')}>
+            Learn how it works?
+          </Button>
         </div>
         <LottieAnimation
           className="w-full mt-6 lg:mt-0 h-40 lg:h-96"

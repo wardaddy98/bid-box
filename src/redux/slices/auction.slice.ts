@@ -1,4 +1,4 @@
-import { IPopulatedAuction } from '@/types/auction.type';
+import { ICurrentAuction, IPopulatedAuction } from '@/types/auction.type';
 import { IPagination } from '@/types/common.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auctionApi } from '../api/auctions.api';
@@ -9,6 +9,7 @@ export const AUCTION_SLICE_KEY = 'auction';
 interface IAuctionsSlice {
   auctions: IPopulatedAuction[];
   pagination: IPagination;
+  currentAuction: ICurrentAuction | null;
 }
 
 const initialState: IAuctionsSlice = {
@@ -18,6 +19,7 @@ const initialState: IAuctionsSlice = {
     totalCount: 0,
     totalPages: 1,
   },
+  currentAuction: null,
 };
 
 const auctionSlice = createSlice({
@@ -26,6 +28,10 @@ const auctionSlice = createSlice({
   reducers: {
     setCurrentPageAuction: (state, { payload }: PayloadAction<number>) => {
       state.pagination.currentPage = payload;
+    },
+
+    setCurrentAuction: (state, { payload }: PayloadAction<ICurrentAuction | null>) => {
+      state.currentAuction = payload;
     },
   },
 
@@ -41,6 +47,15 @@ const auctionSlice = createSlice({
       }
     });
 
+    builder.addMatcher(
+      auctionApi.endpoints.getSingleAuction.matchFulfilled,
+      (state, { payload }) => {
+        if (payload.body?.data) {
+          state.currentAuction = payload.body.data;
+        }
+      },
+    );
+
     builder.addMatcher(auctionApi.endpoints.editAuction.matchFulfilled, (state, { payload }) => {
       if (payload.body?.data?._id) {
         state.auctions = state.auctions.map(e =>
@@ -53,9 +68,12 @@ const auctionSlice = createSlice({
   },
 });
 
-export const { setCurrentPageAuction } = auctionSlice.actions;
+export const { setCurrentPageAuction, setCurrentAuction } = auctionSlice.actions;
 
 export const getAuctionSlice = (rootState: RootState): IAuctionsSlice =>
   rootState[AUCTION_SLICE_KEY];
+
+export const getCurrentAuction = (rootState: RootState) =>
+  getAuctionSlice(rootState).currentAuction;
 
 export default auctionSlice.reducer;

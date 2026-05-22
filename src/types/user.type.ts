@@ -10,7 +10,7 @@ export interface IUser {
   role: UserRole;
   profileImage?: string;
   bidsBalance?: number;
-  favoriteProducts?: string[];
+  favoriteAuctions?: string[];
   googleId?: string;
   createdAt?: Date;
   updatedAt?: Date;

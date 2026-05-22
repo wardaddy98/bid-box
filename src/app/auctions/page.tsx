@@ -1,6 +1,5 @@
 'use client';
 import Button from '@/components/Button';
-import CreateEditAuctionDrawer from '@/components/CreateEditAuctionDrawer';
 import Divider from '@/components/Divider';
 import EmptyValuePlaceholder from '@/components/EmptyValuePlaceholder';
 import LiveAuctionCard from '@/components/LiveAuctionCard';
@@ -15,8 +14,10 @@ import { IPopulatedAuction } from '@/types/auction.type';
 import { ProductCategoryEnum } from '@/types/product.type';
 import { generateSelectOptionsFromEnum } from '@/utils/commonUtils';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../loading';
 
 export interface AuctionFormValues {
   product: string;
@@ -36,6 +37,11 @@ const initialFormValues: AuctionFormValues = {
   product: '',
   startingBid: '',
 };
+
+const CreateEditAuctionDrawer = dynamic(() => import('@/components/CreateEditAuctionDrawer'), {
+  ssr: false,
+  loading: () => <Loading />,
+});
 
 const Auctions = () => {
   const dispatch = useDispatch();
@@ -139,7 +145,7 @@ const Auctions = () => {
           <EmptyValuePlaceholder />
         )}
 
-        <Divider className="my-4" />
+        <Divider className="mt-12 mb-4" />
         <div className="w-full justify-center">
           <Pagination
             currentPage={currentPage}

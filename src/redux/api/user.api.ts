@@ -22,6 +22,12 @@ export interface IRegisterPayload {
 
 export type IRegisterResponse = ILoginResponse;
 
+export interface IBookmarkPayload {
+  auctionId: string;
+}
+
+export interface IBookmarkResponse extends ApiResponse<{ data: IUser }> {}
+
 export const userApi = rootApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<ILoginResponse, ILoginPayload>({
@@ -40,7 +46,27 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+
+    addBookmark: build.mutation<IBookmarkResponse, IBookmarkPayload>({
+      query: payload => ({
+        url: '/user/add-bookmark',
+        method: 'PATCH',
+        body: payload,
+      }),
+    }),
+    removeBookmark: build.mutation<IBookmarkResponse, IBookmarkPayload>({
+      query: payload => ({
+        url: '/user/remove-bookmark',
+        method: 'PATCH',
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = userApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useAddBookmarkMutation,
+  useRemoveBookmarkMutation,
+} = userApi;

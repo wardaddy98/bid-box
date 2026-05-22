@@ -1,4 +1,10 @@
-import { Action, combineReducers, configureStore } from '@reduxjs/toolkit';
+import { logout } from '@/utils/authUtils';
+import {
+  Action,
+  combineReducers,
+  configureStore,
+  createListenerMiddleware,
+} from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import {
   FLUSH,
@@ -23,7 +29,6 @@ export const combinedReducer = combineReducers({
   [AUCTION_SLICE_KEY]: AuctionReducer,
 });
 
-//root reducer is defined separately as a wrapper to combineReducers to implement RESET_STORE functionality
 export const rootReducer = (
   rootState: ReturnType<typeof combinedReducer> | undefined,
   action: Action & { payload: unknown },
@@ -31,6 +36,10 @@ export const rootReducer = (
   // Redux reducers automatically initialize default state when state is undefined
   if (action.type === 'RESET_STORE') {
     rootState = undefined;
+    //reducer cannot perform side effects such as persistor.purge
+    //so i have created a listener middleware to do it.
+    //logout action is dispatched from rootApi, listener middleware listens to it then dispatched RESET_STORE
+    //exporting normal function with persistor.purge from here, then calling it in rootApi did not work, as it caused a circular dependency
   }
 
   if (action.type === 'SET_AUTH_TOKEN' && rootState) {
@@ -56,6 +65,8 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+const listenerMiddleware = createListenerMiddleware();
+
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
@@ -65,7 +76,9 @@ export const store = configureStore({
         //  but redux-persists dispatches actions with functions, which redux shows warnings about
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(rootApi.middleware),
+    })
+      .prepend(listenerMiddleware.middleware)
+      .concat(rootApi.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
@@ -73,10 +86,14 @@ export const store = configureStore({
 setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
+
+listenerMiddleware.startListening({
+  actionCreator: logout,
+  effect: async (_action, api) => {
+    api.dispatch({ type: 'RESET_STORE' });
+    await persistor.purge();
+  },
+});
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export const handleLogout = async (dispatch: AppDispatch) => {
-  dispatch({ type: 'RESET_STORE' });
-  await persistor.purge();
-};

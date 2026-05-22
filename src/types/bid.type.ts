@@ -1,6 +1,9 @@
+import { IAuction } from './auction.type';
 import { IUser } from './user.type';
 
 export interface IBid {
   _id: string;
-  placedBy: string | IUser;
+  user: string | IUser;
+  auction: string | IAuction;
+  amount: number;
 }

@@ -1,5 +1,6 @@
 import constants from '@/constants';
 import { ApiResponse } from '@/types/common.type';
+import { logout } from '@/utils/authUtils';
 import {
   BaseQueryFn,
   createApi,
@@ -8,15 +9,15 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { toast } from 'react-toastify';
-import { handleLogout, RootState } from './store';
 
 const getBaseQuery = fetchBaseQuery({
   baseUrl: constants.API_URL,
   //to include cookies in every request, this is essential for refresh token flow
   credentials: 'include',
   prepareHeaders(headers, api) {
-    const authToken = (api.getState() as RootState).auth?.authToken;
     headers.set('Accept', 'application/json');
+    const rootState = api.getState() as { auth: { authToken: string | null } };
+    const authToken = rootState?.auth?.authToken;
     if (authToken) {
       headers.set('Authorization', `Bearer ${authToken}`);
     }
@@ -56,13 +57,13 @@ const dynamicBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryE
       result = await getBaseQuery(args, api, extraOptions);
     } else {
       // to handle 403 error after 401
-      handleLogout(api.dispatch);
+      api.dispatch(logout());
     }
   }
 
   //to handle direct 403
   if (result.error?.status == 403) {
-    handleLogout(api.dispatch);
+    api.dispatch(logout());
   }
 
   //global catch all unsuccessful api error and show toast

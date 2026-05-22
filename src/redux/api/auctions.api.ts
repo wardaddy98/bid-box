@@ -1,4 +1,9 @@
-import { IAuction, IPopulatedAuction } from '@/types/auction.type';
+import {
+  AuctionStatusEnum,
+  IAuction,
+  ICurrentAuction,
+  IPopulatedAuction,
+} from '@/types/auction.type';
 import { ApiResponse, PaginatedApiResponse } from '@/types/common.type';
 import { ProductCategoryEnum } from '@/types/product.type';
 import { rootApi } from '../rootApi';
@@ -10,6 +15,7 @@ export interface IGetAllAuctionsQueryString {
   limit?: number;
   category?: ProductCategoryEnum | 'all_categories';
   search?: string;
+  status?: AuctionStatusEnum;
 }
 
 export interface ICreateAuctionPayload {
@@ -21,11 +27,28 @@ export interface ICreateAuctionPayload {
 export type ICreateAuctionResponse = ApiResponse<{ data: IPopulatedAuction }>;
 export type IEditAuctionResponse = ApiResponse<{ data: IAuction }>;
 
+export type IGetSingleAuctionResponse = ApiResponse<{ data: ICurrentAuction }>;
+
 export const auctionApi = rootApi.injectEndpoints({
   endpoints: build => ({
     getAllAuctions: build.query<IGetAllAuctionsResponse, IGetAllAuctionsQueryString>({
       query: queryStrings => ({
-        url: `/auction?page=${queryStrings.page}&limit=${queryStrings.limit || 10}&category=${queryStrings.category}&search=${queryStrings.search}`,
+        url: `/auction`,
+        method: 'GET',
+        params: {
+          page: queryStrings?.page || 1,
+          limit: queryStrings?.limit || 10,
+          category: queryStrings?.category ?? 'all_categories',
+          search: queryStrings?.search || '',
+          ...(queryStrings?.status && {
+            status: queryStrings.status,
+          }),
+        },
+      }),
+    }),
+    getSingleAuction: build.query<IGetSingleAuctionResponse, { auctionId: string }>({
+      query: ({ auctionId }) => ({
+        url: `/auction/${auctionId}`,
         method: 'GET',
       }),
     }),
@@ -49,5 +72,9 @@ export const auctionApi = rootApi.injectEndpoints({
   }),
 });
 
-export const { useLazyGetAllAuctionsQuery, useCreateAuctionMutation, useEditAuctionMutation } =
-  auctionApi;
+export const {
+  useLazyGetAllAuctionsQuery,
+  useCreateAuctionMutation,
+  useEditAuctionMutation,
+  useGetSingleAuctionQuery,
+} = auctionApi;
