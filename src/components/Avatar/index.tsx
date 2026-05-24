@@ -13,17 +13,47 @@ const sizeMap: Record<AvatarSize, string> = {
   24: 'w-24 h-24',
 };
 
+const textSizeMap: Record<AvatarSize, string> = {
+  6: 'text-xs',
+  8: 'text-sm',
+  10: 'text-base',
+  12: 'text-lg',
+  16: 'text-2xl',
+  20: 'text-3xl',
+  24: 'text-4xl',
+};
+
 interface Props {
-  imageUrl: string;
+  imageUrl: string | undefined;
   size?: AvatarSize;
   checkBadge?: boolean;
+  userName?: string;
 }
 
 const Avatar = (props: Props) => {
-  const { imageUrl, size = 8, checkBadge = false } = props;
+  const { imageUrl, size = 8, checkBadge = false, userName = 'User' } = props;
+
+  const initials = userName
+    .trim()
+    .split(' ')
+    .slice(0, 2)
+    .map(word => word[0]?.toUpperCase())
+    .join('');
+
   return (
     <div className={`relative rounded-full w-${size} ${sizeMap[size]} flex-none`}>
-      <Image alt="User" src={imageUrl} className=" object-cover rounded-full" fill />
+      {imageUrl ? (
+        <Image alt="User" src={imageUrl} className=" object-cover rounded-full" fill />
+      ) : (
+        <div
+          className={clsx(
+            'w-full h-full rounded-full bg-primary text-white font-semibold flex items-center justify-center',
+            textSizeMap[size],
+          )}
+        >
+          {initials}
+        </div>
+      )}
       {checkBadge && (
         <CheckBadgeIcon
           className={clsx(

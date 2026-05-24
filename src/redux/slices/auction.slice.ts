@@ -1,4 +1,4 @@
-import { ICurrentAuction, IPopulatedAuction } from '@/types/auction.type';
+import { IBidWithUser, ICurrentAuction, IPopulatedAuction } from '@/types/auction.type';
 import { IPagination } from '@/types/common.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auctionApi } from '../api/auctions.api';
@@ -63,6 +63,23 @@ const auctionSlice = createSlice({
             ? { ...e, startingBid: payload.body?.data?.startingBid }
             : e,
         );
+      }
+    });
+
+    builder.addMatcher(auctionApi.endpoints.placeBid.matchFulfilled, (state, { payload }) => {
+      if (payload?.body?.data && state.currentAuction) {
+        const placedBid: IBidWithUser = {
+          ...payload?.body?.data,
+          user: {
+            email: payload?.body?.data?.user?.email,
+            name: payload?.body?.data?.user?.name,
+            profileImage: payload?.body?.data?.user?.profileImage,
+          },
+        };
+
+        state.currentAuction.bids = state.currentAuction?.bids?.length
+          ? [placedBid, ...state.currentAuction.bids]
+          : [placedBid];
       }
     });
   },

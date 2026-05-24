@@ -138,7 +138,7 @@ const LiveAuctionCard = (props: Props) => {
 
         {isAdmin ? (
           <>
-            <span className="block text-lg text-green-600 font-semibold">{`Starting Bid - ${formatAmount(auction?.startingBid)}`}</span>
+            <span className="block text-lg text-green-600 font-semibold">{`Starting Bid - ${formatAmount(auction?.startingBid, false)}`}</span>
 
             <div className="mt-2 flex flex-col justify-start">
               <span>{`Live on - ${isoDateToReadableFormat(auction?.liveOn)}`}</span>

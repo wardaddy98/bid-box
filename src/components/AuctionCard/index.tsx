@@ -1,12 +1,14 @@
 'use client';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import {
-  AdjustmentsHorizontalIcon,
-  CakeIcon,
-  ClockIcon,
-  MapPinIcon,
-} from '@heroicons/react/24/solid';
-import React, { useState } from 'react';
+import { IPlaceBidPayload, usePlaceBidMutation } from '@/redux/api/auctions.api';
+import { getUser } from '@/redux/slices/auth.slice';
+import { AuctionStatusEnum, ICurrentAuction } from '@/types/auction.type';
+import { formatAmount } from '@/utils/commonUtils';
+import validateUserInput from '@/utils/validateUserInput';
+import { placeBidSchema } from '@/validations/auction.validation';
+import { BoltIcon, ClockIcon, FireIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { TrophyIcon } from '@heroicons/react/24/solid';
+import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Avatar from '../Avatar';
 import Button from '../Button';
 import Divider from '../Divider';
@@ -14,137 +16,283 @@ import TextInput from '../TextInput';
 import Tooltip from '../Tooltip';
 
 interface Props {
-  test?: string;
-  status: 'active' | 'pending' | 'ended';
+  currentAuction: ICurrentAuction | null;
 }
 
 const AuctionCard = (props: Props) => {
-  const { status } = props;
+  const [triggerPlaceBid, { isLoading }] = usePlaceBidMutation();
+
+  const { currentAuction } = props;
+
+  const user = useSelector(getUser);
+  const status = currentAuction?.status;
 
   const [customBidState, setCustomBidState] = useState(false);
   const [customBidAmount, setCustomBidAmount] = useState<number>(0);
+  const [timer, setTimer] = useState<number>(60);
 
-  const handleCustomBidAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomBidAmount(Number(e.target.value ?? 0));
+  const baseAmount = useMemo(() => {
+    return currentAuction?.bids?.length
+      ? currentAuction.bids[0].amount
+      : (currentAuction?.startingBid ?? 0);
+  }, [currentAuction]);
+
+  const bidAmounts = useMemo(() => {
+    return [baseAmount + 1, baseAmount + 5, baseAmount + 10, baseAmount + 25];
+  }, [baseAmount]);
+
+  const lastBid = useMemo(() => {
+    return currentAuction?.bids?.[0];
+  }, [currentAuction?.bids]);
+
+  const placeBid = async (amount: number) => {
+    const payload: IPlaceBidPayload = { amount, auctionId: currentAuction?.auctionId as string };
+    const isValidated = validateUserInput(payload, placeBidSchema);
+    if (!isValidated) return;
+    return await triggerPlaceBid(payload);
   };
 
+  const handleCustomBid = async () => {
+    const res = await placeBid(customBidAmount);
+    if (res?.data?.status === 200) {
+      setCustomBidAmount(0);
+      setCustomBidState(false);
+    }
+  };
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTimer(prev => prev - 1);
+  //   }, 1000);
+
+  //   return () => {
+  //     if (interval) clearInterval(interval);
+  //   };
+  // }, [lastBid]);
+
+  const handleBuyNow = async () => {};
+
   return (
-    <div className="rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 overflow-hidden">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div
-        className={`p-2 flex items-center justify-center gap-2
-        ${
-          status === 'active'
-            ? 'bg-[linear-gradient(to_bottom,rgb(255,224,228),rgb(255,255,255))] text-red-400'
-            : status === 'pending'
-              ? 'bg-[linear-gradient(to_bottom,#fe9a00,#ffffff)] text-gray-900'
-              : 'bg-[#00a46d] text-white'
-        }
-      `}
+        className={`
+            px-6 py-4 border-b border-gray-200
+            ${
+              status === AuctionStatusEnum.Live
+                ? 'bg-red-50'
+                : status === AuctionStatusEnum.Pending
+                  ? 'bg-yellow-50'
+                  : 'bg-emerald-50'
+            }
+          `}
       >
-        <ClockIcon className="h-5 w-5" />
-        <span className="font-semibold">
-          {status === 'active'
-            ? `5 seconds left`
-            : status === 'pending'
-              ? `Auction hasn't started yet!`
-              : 'Auction has ended!'}
-        </span>
-      </div>
-
-      <div className="py-2 px-6 flex items-center justify-between">
-        <span className="font-semibold">Current Bid</span>
-
-        <div className="flex items-center gap-4">
-          <span className="line-through decoration-2 font-semibold text-lg text-gray-400">
-            $2000
-          </span>
-          <span className="text-3xl font-bold">$65.46</span>
-        </div>
-      </div>
-
-      <div className="my-2 flex items-start gap-6 py-2 px-6">
-        <Avatar
-          imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;"
-          checkBadge
-          size={12}
-        />
-
-        <div>
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-gray-900 text-md">Name</h3>
-          </div>
-          <div className="flex items-center gap-4 justify-start">
-            <div className="flex items-center gap-1.5 justify-start">
-              <CakeIcon className="h-3.5 w-3.5 text-gray-400" />
-              <span className="font-medium text-gray-400 text-sm">7/9.2021</span>
-            </div>
-            <div className="flex items-center gap-1.5 justify-start">
-              <MapPinIcon className="h-3.5 w-3.5 text-gray-400" />
-              <span className="font-medium text-gray-400 text-sm">Meerut</span>
-            </div>
-          </div>
+            <FireIcon
+              className={`h-5 w-5 ${
+                status === AuctionStatusEnum.Live
+                  ? 'text-red-500'
+                  : status === AuctionStatusEnum.Pending
+                    ? 'text-yellow-500'
+                    : 'text-emerald-500'
+              }`}
+            />
 
-          <p className="mt-2 text-sm text-gray-500">Lorem ipsum dolor s</p>
-        </div>
-      </div>
-
-      {status === 'active' && (
-        <div className="py-2 px-6 border-t-2 border-gray-200">
-          <div className="flex items-center gap-2">
-            <span className=" font-semibold">Place Bids</span>
-            <Tooltip content="Book any number of bids. Each bid will be placed for you before the timer would reach zero. The first bid will be placed immediately.">
-              <InformationCircleIcon className="h-4 w-4 text-gray-500 hover:text-primary" />
-            </Tooltip>
-          </div>
-          <span className="text-sm font-semibold text-gray-400">
-            How many bids do you want to place?
-          </span>
-
-          {customBidState ? (
-            <div className="flex items-center justify-between my-2">
-              <TextInput
-                placeholder="Bid Amount"
-                value={customBidAmount || ''}
-                min={'1'}
-                onChange={handleCustomBidAmountChange}
-              />
-              <div className="flex items-center gap-2">
-                <Button variant="primary" onClick={() => setCustomBidState(false)}>
-                  Book
-                </Button>
-                <Button variant="secondary" onClick={() => setCustomBidState(false)}>
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div
-              className="my-2"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
-                gap: '10px',
-              }}
+            <span
+              className={`
+                  text-sm font-bold tracking-wide uppercase
+                  ${
+                    status === AuctionStatusEnum.Live
+                      ? 'text-red-500'
+                      : status === AuctionStatusEnum.Pending
+                        ? 'text-yellow-600'
+                        : 'text-emerald-600'
+                  }
+                `}
             >
-              <Button variant="primary">1</Button>
-              <Button variant="primary">5</Button>
-              <Button variant="primary">25</Button>
-              <Button variant="primary">50</Button>
-              <Button variant="primary">75</Button>
-              <Button variant="primary">100</Button>
-              <Button variant="primary">200</Button>
-              <Button variant="primary" onClick={() => setCustomBidState(true)}>
-                <AdjustmentsHorizontalIcon className="h-5 w-5" />
-              </Button>
+              {status === AuctionStatusEnum.Live
+                ? 'Live Auction'
+                : status === AuctionStatusEnum.Pending
+                  ? 'Upcoming Auction'
+                  : 'Auction Completed'}
+            </span>
+          </div>
+
+          {status === AuctionStatusEnum.Live && (
+            <div
+              className={`
+                  flex items-center gap-2 rounded-xl px-4 py-2
+                  ${timer <= 15 ? 'bg-red-400 text-white animate-pulse [animation-duration:0.8s]' : 'bg-white'}
+                `}
+            >
+              <ClockIcon className="h-5 w-5" />
+
+              <span className="font-bold text-xl">
+                {String(Math.floor(timer / 60)).padStart(2, '0')}:
+                {String(timer % 60).padStart(2, '0')}
+              </span>
             </div>
           )}
-          <Divider className="my-5" />
+        </div>
+      </div>
 
-          <div className="flex items-center justify-center mb-2">
-            <Button variant="text">But it now for $656.68</Button>
+      <div className="px-6 py-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <span className="text-sm font-semibold uppercase tracking-wide text-gray-400">
+              {currentAuction?.status === AuctionStatusEnum.Completed
+                ? 'Winning Bid'
+                : 'Current Bid'}
+            </span>
+
+            <h1 className="mt-2 text-4xl font-bold text-gray-900">
+              {formatAmount(baseAmount, false)}
+            </h1>
+
+            <div className="mt-4 flex items-center gap-3">
+              {lastBid?.user?.profileImage && (
+                <Avatar imageUrl={lastBid?.user?.profileImage} size={10} />
+              )}
+
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold uppercase text-gray-400">
+                  {currentAuction?.status === AuctionStatusEnum.Completed
+                    ? 'Winner'
+                    : 'Leading Bidder'}
+                </span>
+
+                <span className="font-semibold text-gray-800">
+                  {user?.email === lastBid?.user?.email
+                    ? 'You'
+                    : lastBid?.user?.name || 'No bids yet'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 justify-center">
+            <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <TrophyIcon className="h-5 w-5 text-yellow-500" />
+
+                <span className="text-sm font-semibold text-gray-700">
+                  {currentAuction?.bids?.length || 0} bids placed
+                </span>
+              </div>
+            </div>
+            <div className="text-sm rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
+              <span className="font-semibold text-gray-400">Starting Bid - </span>
+              <span className="font-semibold text-gray-700">{currentAuction?.startingBid}</span>
+            </div>
           </div>
         </div>
-      )}
+
+        {status === AuctionStatusEnum.Live && (
+          <>
+            <Divider className="my-4" />
+
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-gray-900">Place Bid</span>
+
+              <Tooltip content="Book any number of bids. 1 Bid = ₹100..">
+                <InformationCircleIcon className="h-4 w-4 text-gray-400 hover:text-primary" />
+              </Tooltip>
+            </div>
+
+            {!customBidState ? (
+              <>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {bidAmounts.map(amount => (
+                    <Button
+                      key={amount}
+                      variant="primary"
+                      disabled={isLoading}
+                      onClick={() => placeBid(amount)}
+                      className="text-lg font-bold"
+                    >
+                      +{amount - baseAmount}
+                    </Button>
+                  ))}
+                </div>
+
+                <Button
+                  variant="secondary"
+                  className="mt-2 w-full"
+                  onClick={() => setCustomBidState(true)}
+                >
+                  Custom Bid
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="mt-3">
+                  <TextInput
+                    placeholder="Custom amount"
+                    value={customBidAmount || ''}
+                    onChange={e => setCustomBidAmount(Number(e.target.value ?? 0))}
+                  />
+
+                  {!!customBidAmount && customBidAmount <= baseAmount && (
+                    <span className="mt-1 block text-xs font-medium text-red-500">
+                      Amount must exceed current bid
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    className="flex-1"
+                    variant="primary"
+                    disabled={!customBidAmount || customBidAmount <= baseAmount}
+                    onClick={handleCustomBid}
+                  >
+                    Confirm
+                  </Button>
+
+                  <Button
+                    className="flex-1"
+                    variant="secondary"
+                    onClick={() => setCustomBidState(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {!!currentAuction?.product?.availableStock &&
+              currentAuction?.product?.availableStock > 1 && (
+                <>
+                  <Divider className="my-4" />
+
+                  <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <BoltIcon className="h-4 w-4 text-primary" />
+
+                        <span className="text-xs font-bold uppercase text-primary">
+                          Buy Instantly
+                        </span>
+                      </div>
+
+                      <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                        {formatAmount(currentAuction.product.sellingPrice)}
+                      </h2>
+                    </div>
+
+                    <Button variant="primary" onClick={handleBuyNow}>
+                      Buy Now
+                    </Button>
+                  </div>
+
+                  <p className="mt-2 text-xs font-medium text-gray-400">
+                    Your bids will be refunded on instant purchase
+                  </p>
+                </>
+              )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

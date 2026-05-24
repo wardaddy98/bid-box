@@ -6,4 +6,6 @@ export interface IBid {
   user: string | IUser;
   auction: string | IAuction;
   amount: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

@@ -1,5 +1,6 @@
 import { IUser } from '@/types/user.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { auctionApi } from '../api/auctions.api';
 import { userApi } from '../api/user.api';
 import { RootState } from '../store';
 
@@ -57,6 +58,12 @@ export const authSlice = createSlice({
     builder.addMatcher(userApi.endpoints.removeBookmark.matchFulfilled, (state, { payload }) => {
       if (state.user && payload?.body?.data?.favoriteAuctions) {
         state.user.favoriteAuctions = payload.body?.data.favoriteAuctions;
+      }
+    });
+
+    builder.addMatcher(auctionApi.endpoints.placeBid.matchFulfilled, (state, { payload }) => {
+      if (payload?.body?.data?.user?.bidsBalance && state.user) {
+        state.user.bidsBalance = payload?.body?.data?.user?.bidsBalance;
       }
     });
   },

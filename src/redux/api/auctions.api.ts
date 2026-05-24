@@ -1,6 +1,7 @@
 import {
   AuctionStatusEnum,
   IAuction,
+  IBidWithUser,
   ICurrentAuction,
   IPopulatedAuction,
 } from '@/types/auction.type';
@@ -28,6 +29,13 @@ export type ICreateAuctionResponse = ApiResponse<{ data: IPopulatedAuction }>;
 export type IEditAuctionResponse = ApiResponse<{ data: IAuction }>;
 
 export type IGetSingleAuctionResponse = ApiResponse<{ data: ICurrentAuction }>;
+
+export interface IPlaceBidPayload {
+  amount: number;
+  auctionId: string;
+}
+
+export type IPlaceBidResponse = ApiResponse<{ data: IBidWithUser }>;
 
 export const auctionApi = rootApi.injectEndpoints({
   endpoints: build => ({
@@ -69,6 +77,14 @@ export const auctionApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+
+    placeBid: build.mutation<IPlaceBidResponse, IPlaceBidPayload>({
+      query: payload => ({
+        url: '/bid',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -77,4 +93,5 @@ export const {
   useCreateAuctionMutation,
   useEditAuctionMutation,
   useGetSingleAuctionQuery,
+  usePlaceBidMutation,
 } = auctionApi;

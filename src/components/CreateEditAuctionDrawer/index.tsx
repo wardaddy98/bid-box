@@ -52,6 +52,9 @@ const CreateEditAuctionDrawer = (props: CreateEditAuctionDrawerProps) => {
   useEffect(() => {
     if (!dispatch) return;
     dispatch(setIsLoading(isFetching));
+    return () => {
+      dispatch(setIsLoading(false));
+    };
   }, [dispatch, isFetching]);
 
   const productOptions: SelectOption[] = useMemo(() => {

@@ -12,6 +12,6 @@ export interface IUser {
   bidsBalance?: number;
   favoriteAuctions?: string[];
   googleId?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }

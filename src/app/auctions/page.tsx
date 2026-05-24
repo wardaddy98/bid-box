@@ -78,6 +78,10 @@ const Auctions = () => {
   useEffect(() => {
     if (!dispatch) return;
     dispatch(setIsLoading(isFetching));
+
+    return () => {
+      dispatch(setIsLoading(false));
+    };
   }, [dispatch, isFetching]);
 
   const categoryOptions = generateSelectOptionsFromEnum(ProductCategoryEnum);
