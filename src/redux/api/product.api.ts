@@ -1,20 +1,26 @@
-import { IProduct, ProductCategoryEnum } from '@/types/product.type';
+import { IProduct, IProductWithoutProductImage, ProductCategoryEnum } from '@/types/product.type';
 import { rootApi } from '../rootApi';
 import { ApiResponse, PaginatedApiResponse } from './../../types/common.type';
 
 export interface ICreateProductPayload {
   title: string;
   description: string;
-  productImages: string[];
   sellingPrice: number;
   category: ProductCategoryEnum;
   availableStock: number;
 }
+export interface IEditProductPayload {
+  description: string;
+  sellingPrice: number;
+  availableStock: number;
+}
 
-export type ICreateProductResponse = ApiResponse<{ product: IProduct }>;
+export type ICreateProductResponse = ApiResponse<{ data: IProduct }>;
 
 export type IGetAllProductsResponse = PaginatedApiResponse<IProduct[]>;
-export type IGetAllProductsUnpaginatedResponse = ApiResponse<{ data: IProduct[] }>;
+export type IGetAllProductsUnpaginatedResponse = ApiResponse<{
+  data: IProductWithoutProductImage[];
+}>;
 
 export interface IGetAllProductsQueryString {
   page?: number;
@@ -25,12 +31,21 @@ export interface IGetAllProductsQueryString {
 
 export const productApi = rootApi.injectEndpoints({
   endpoints: build => ({
-    createProduct: build.mutation<ICreateProductResponse, ICreateProductPayload>({
+    createProduct: build.mutation<ICreateProductResponse, FormData>({
       query: payload => ({
         url: '/product',
         method: 'POST',
         body: payload,
       }),
+    }),
+    editProduct: build.mutation<ICreateProductResponse, { productId: string; payload: FormData }>({
+      query: ({ productId, payload }) => {
+        return {
+          url: `product/${productId}`,
+          method: 'PATCH',
+          body: payload,
+        };
+      },
     }),
     getAllProducts: build.query<IGetAllProductsResponse, IGetAllProductsQueryString>({
       query: queryStrings => ({
@@ -52,4 +67,5 @@ export const {
   useGetAllProductsQuery,
   useLazyGetAllProductsQuery,
   useGetAllProductsUnPaginatedQuery,
+  useEditProductMutation,
 } = productApi;

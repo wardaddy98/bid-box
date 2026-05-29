@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Avatar from '../Avatar';
 import Button from '../Button';
 import Divider from '../Divider';
+import EmptyValuePlaceholder from '../EmptyValuePlaceholder';
 import Modal from '../Modal';
 
 interface RecentBidsProps {
@@ -32,47 +33,55 @@ const RecentBids = (props: RecentBidsProps) => {
     <>
       <div className="mt-6 rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 px-6 py-4">
         <span className="block font-semibold">Recent Top Bids</span>
-        <div className="mt-2 flex flex-col gap-1 lg:gap-2 justify-start">
-          {bids.slice(0, 10).map((bid, idx) => (
-            <Bid key={idx} bid={bid} topBid={idx === 0} />
-          ))}
-        </div>
-
-        <Divider className="my-2" />
-
-        <span className="my-4 block font-semibold">Other Bidders in this Auction</span>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center justify-start gap-4">
-            {remainingBids.slice(0, 5).map((bid, idx) => (
-              <Avatar
-                key={idx}
-                imageUrl={bid?.user?.profileImage}
-                userName={bid?.user?.name}
-                size={6}
-              />
+        {bids?.length > 0 ? (
+          <div className="mt-2 flex flex-col gap-1 lg:gap-2 justify-start">
+            {bids.slice(0, 10).map((bid, idx) => (
+              <Bid key={idx} bid={bid} topBid={idx === 0} />
             ))}
-
-            {(() => {
-              const extraBids = remainingBids.slice(5);
-
-              if (extraBids) {
-                return (
-                  <div className="w-6 h-6 rounded-full overflow-hidden bg-primary/85 text-sm font-normal text-white inline-flex items-center justify-center ">
-                    <span>+{extraBids?.length}</span>
-                  </div>
-                );
-              } else {
-                return <></>;
-              }
-            })()}
           </div>
-          <div className="shrink">
-            <Button variant="text" onClick={toggleBiddersModalState}>
-              View All
-            </Button>
-          </div>
-        </div>
+        ) : (
+          <EmptyValuePlaceholder height="h-40" text="No bids yet..." />
+        )}
+        {remainingBids?.length > 0 && (
+          <>
+            <Divider className="my-2" />
+
+            <span className="my-4 block font-semibold">Other Bidders in this Auction</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center justify-start gap-4">
+                {remainingBids.slice(0, 5).map((bid, idx) => (
+                  <Avatar
+                    key={idx}
+                    imageUrl={bid?.user?.profileImage}
+                    userName={bid?.user?.name}
+                    size={6}
+                  />
+                ))}
+
+                {(() => {
+                  const extraBids = remainingBids.slice(5);
+
+                  if (extraBids) {
+                    return (
+                      <div className="w-6 h-6 rounded-full overflow-hidden bg-primary/85 text-sm font-normal text-white inline-flex items-center justify-center ">
+                        <span>+{extraBids?.length}</span>
+                      </div>
+                    );
+                  } else {
+                    return <></>;
+                  }
+                })()}
+              </div>
+              <div className="shrink">
+                <Button variant="text" onClick={toggleBiddersModalState}>
+                  View All
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
+
       {biddersModalState && (
         <Modal
           show={biddersModalState}

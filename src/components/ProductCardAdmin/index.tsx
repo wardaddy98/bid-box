@@ -13,7 +13,13 @@ const ProductCardAdmin = ({ product, handleEdit }: Props) => {
   return (
     <div className="bg-white shadow-sm border border-gray-200  hover:-translate-y-1 hover:shadow-lg transition-transform duration-100 ease-out cursor-pointer">
       <div className="w-full aspect-square relative">
-        <Image src={product?.productImages?.[0]} alt="product" fill className="object-fill" />
+        <Image
+          src={product?.productImages?.[0]?.signedUrl ?? ''}
+          alt="product"
+          fill
+          className="object-fill"
+          unoptimized
+        />
         <IconButton onClick={handleEdit} name="edit" rounded className="absolute top-2 right-2">
           <PencilIcon className="h-4 w-4" />
         </IconButton>

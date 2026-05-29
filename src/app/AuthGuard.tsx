@@ -1,6 +1,7 @@
 'use client';
 import PageLoader from '@/components/PageLoader';
 import { getAuthSlice } from '@/redux/slices/auth.slice';
+import socket from '@/socket/socket';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -14,6 +15,13 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
     if (!authToken) router.replace('/login');
   }, [router, authToken]);
+
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <>

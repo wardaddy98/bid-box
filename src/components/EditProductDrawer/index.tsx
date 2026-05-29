@@ -1,5 +1,5 @@
-import { CreateProductTouchedState, ProductFormValues } from '@/app/products/page';
-import { ProductCategoryEnum } from '@/types/product.type';
+import { CreateProductTouchedState } from '@/app/products/page';
+import { IProduct, IProductImage } from '@/types/product.type';
 import { Dispatch, SetStateAction } from 'react';
 import Button from '../Button';
 import Drawer from '../Drawer';
@@ -8,50 +8,50 @@ import RichTextEditor from '../RichTextEditor';
 import Select, { SelectOption } from '../Select';
 import TextInput from '../TextInput';
 
-interface CreateProductDrawerProps {
+interface EditProductDrawerProps {
   drawerState: boolean;
   onClose: () => void;
-  formValues: ProductFormValues;
-  setFormValues: Dispatch<SetStateAction<ProductFormValues>>;
+  editProductFormValues: IProduct | null;
+  setEditProductFormValues: Dispatch<SetStateAction<IProduct | null>>;
   isLoading: boolean;
   touched: CreateProductTouchedState;
   setTouched: Dispatch<SetStateAction<CreateProductTouchedState>>;
-  handleCreate: () => Promise<void>;
+  handleEdit: () => Promise<void>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  rawFiles: File[];
-  setRawFiles: Dispatch<SetStateAction<File[]>>;
+  editFiles: (IProductImage | File)[];
+  setEditFiles: Dispatch<SetStateAction<(File | IProductImage)[]>>;
   categoryOptions: SelectOption[];
 }
 
-const CreateProductDrawer = (props: CreateProductDrawerProps) => {
+const EditProductDrawer = (props: EditProductDrawerProps) => {
   const {
     drawerState,
-    formValues,
-    handleCreate,
     isLoading,
-    setFormValues,
     setTouched,
     onClose,
     touched,
     handleChange,
-    rawFiles,
-    setRawFiles,
+    editFiles,
+    editProductFormValues,
+    handleEdit,
+    setEditFiles,
+    setEditProductFormValues,
     categoryOptions,
   } = props;
 
   return (
-    <Drawer open={drawerState} onClose={onClose} title={'List new Product'}>
-      <TextInput
-        name="title"
-        label="Title"
-        value={formValues.title}
-        onChange={handleChange}
-        disabled={isLoading}
-      />
+    <Drawer
+      open={drawerState}
+      onClose={onClose}
+      title={`Edit Product - ${editProductFormValues?.productId}`}
+    >
+      <TextInput name="title" label="Title" value={editProductFormValues?.title} disabled />
 
       <RichTextEditor
-        value={formValues?.description}
-        onChange={value => setFormValues(prev => ({ ...prev, description: value }))}
+        value={editProductFormValues?.description ?? ''}
+        onChange={value =>
+          setEditProductFormValues(prev => (prev ? { ...prev, description: value } : null))
+        }
         containerClassName="mt-4"
         placeholder='"Write product description..."'
         label="Description"
@@ -60,18 +60,17 @@ const CreateProductDrawer = (props: CreateProductDrawerProps) => {
 
       <Select
         label="Category"
-        value={formValues.category}
-        onChange={val => setFormValues(prev => ({ ...prev, category: val as ProductCategoryEnum }))}
+        value={editProductFormValues?.category}
         options={categoryOptions}
         containerClassName="mt-4"
-        disabled={isLoading}
+        disabled
       />
 
       <FileUploader
         label="Product Images"
-        files={rawFiles}
+        files={editFiles}
         onChange={files => {
-          setRawFiles(files as File[]);
+          setEditFiles(files);
         }}
         containerClassName="mt-4"
         disabled={isLoading}
@@ -82,8 +81,8 @@ const CreateProductDrawer = (props: CreateProductDrawerProps) => {
         label="Selling Price"
         value={
           touched?.sellingPrice
-            ? formValues.sellingPrice
-            : `₹ ${Number(formValues.sellingPrice || 0).toLocaleString('en-IN')}`
+            ? editProductFormValues?.sellingPrice
+            : `₹ ${Number(editProductFormValues?.sellingPrice || 0).toLocaleString('en-IN')}`
         }
         onFocus={e => setTouched(prev => ({ ...prev, [e.target.name]: true }))}
         onBlur={e => setTouched(prev => ({ ...prev, [e.target.name]: false }))}
@@ -105,8 +104,8 @@ const CreateProductDrawer = (props: CreateProductDrawerProps) => {
         label="Available Stock"
         value={
           touched?.availableStock
-            ? formValues.availableStock
-            : `₹ ${Number(formValues.availableStock).toLocaleString('en-IN')}`
+            ? editProductFormValues?.availableStock
+            : `${Number(editProductFormValues?.availableStock).toLocaleString('en-IN')}`
         }
         onFocus={e => setTouched(prev => ({ ...prev, [e.target.name]: true }))}
         onBlur={e => setTouched(prev => ({ ...prev, [e.target.name]: false }))}
@@ -124,12 +123,12 @@ const CreateProductDrawer = (props: CreateProductDrawerProps) => {
       />
 
       <div className="flex justify-end mt-4">
-        <Button onClick={handleCreate} variant="primary" isLoading={isLoading}>
-          Create Product
+        <Button onClick={handleEdit} variant="primary" isLoading={isLoading}>
+          Edit Product
         </Button>
       </div>
     </Drawer>
   );
 };
 
-export default CreateProductDrawer;
+export default EditProductDrawer;

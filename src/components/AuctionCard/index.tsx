@@ -2,12 +2,12 @@
 import { IPlaceBidPayload, usePlaceBidMutation } from '@/redux/api/auctions.api';
 import { getUser } from '@/redux/slices/auth.slice';
 import { AuctionStatusEnum, ICurrentAuction } from '@/types/auction.type';
-import { formatAmount } from '@/utils/commonUtils';
+import { formatAmount, isoDateToHMSFormat } from '@/utils/commonUtils';
 import validateUserInput from '@/utils/validateUserInput';
 import { placeBidSchema } from '@/validations/auction.validation';
 import { BoltIcon, ClockIcon, FireIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { TrophyIcon } from '@heroicons/react/24/solid';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Avatar from '../Avatar';
 import Button from '../Button';
@@ -60,20 +60,38 @@ const AuctionCard = (props: Props) => {
     }
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setTimer(prev => prev - 1);
-  //   }, 1000);
+  useEffect(() => {
+    if (!currentAuction?.expiresAt) return;
 
-  //   return () => {
-  //     if (interval) clearInterval(interval);
-  //   };
-  // }, [lastBid]);
+    const updateTimer = () => {
+      const remainingSeconds = Math.max(
+        0,
+        Math.floor((new Date(currentAuction.expiresAt as string).getTime() - Date.now()) / 1000),
+      );
+
+      setTimer(remainingSeconds);
+    };
+
+    //to run 1st time
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [currentAuction?.expiresAt]);
 
   const handleBuyNow = async () => {};
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      {currentAuction?.expiresAt && (
+        <span className="text-lg font-semibold">
+          {`${new Date(currentAuction?.expiresAt).getDate()}/${new Date(currentAuction?.expiresAt).getMonth()}/${new Date(currentAuction?.expiresAt).getUTCFullYear()} ` +
+            isoDateToHMSFormat(currentAuction?.expiresAt)}
+        </span>
+      )}
       <div
         className={`
             px-6 py-4 border-b border-gray-200
@@ -206,7 +224,7 @@ const AuctionCard = (props: Props) => {
                     <Button
                       key={amount}
                       variant="primary"
-                      disabled={isLoading}
+                      disabled={isLoading || timer === 0}
                       onClick={() => placeBid(amount)}
                       className="text-lg font-bold"
                     >
@@ -219,6 +237,7 @@ const AuctionCard = (props: Props) => {
                   variant="secondary"
                   className="mt-2 w-full"
                   onClick={() => setCustomBidState(true)}
+                  disabled={timer === 0}
                 >
                   Custom Bid
                 </Button>
@@ -243,7 +262,7 @@ const AuctionCard = (props: Props) => {
                   <Button
                     className="flex-1"
                     variant="primary"
-                    disabled={!customBidAmount || customBidAmount <= baseAmount}
+                    disabled={!customBidAmount || customBidAmount <= baseAmount || timer === 0}
                     onClick={handleCustomBid}
                   >
                     Confirm

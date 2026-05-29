@@ -10,12 +10,29 @@ export enum ProductCategoryEnum {
   Others = 'others',
 }
 
-export interface IProduct {
+export interface IProductImage {
+  objectKey: string;
+  signedUrl: string;
+}
+
+export interface IProductWithoutProductImage {
   _id: string;
   title: string;
   productId: string;
   description: string;
   productImages: string[];
+  sellingPrice: number;
+  category: ProductCategoryEnum;
+  availableStock: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+export interface IProduct {
+  _id: string;
+  title: string;
+  productId: string;
+  description: string;
+  productImages: IProductImage[];
   sellingPrice: number;
   category: ProductCategoryEnum;
   availableStock: number;

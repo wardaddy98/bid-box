@@ -26,8 +26,9 @@ export interface ICreateAuctionPayload {
 }
 
 export type ICreateAuctionResponse = ApiResponse<{ data: IPopulatedAuction }>;
-export type IEditAuctionResponse = ApiResponse<{ data: IAuction }>;
-
+export type IEditAuctionResponse = ApiResponse<{
+  data: Omit<IAuction, 'product'> & { product: string };
+}>;
 export type IGetSingleAuctionResponse = ApiResponse<{ data: ICurrentAuction }>;
 
 export interface IPlaceBidPayload {

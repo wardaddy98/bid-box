@@ -1,5 +1,6 @@
 'use client';
 
+import { IProductImage } from '@/types/product.type';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
@@ -10,7 +11,7 @@ import IconButton from '../IconButton';
 
 interface Props {
   show: boolean;
-  images: string[];
+  images: IProductImage[];
   activeIndex: number;
   onPrev: () => void;
   onNext: () => void;
@@ -114,7 +115,7 @@ function LightBox(props: Props) {
       {/* Image */}
       <div className="relative max-w-[90vw] max-h-[60vh] lg:max-h-[90vh] w-full h-full">
         <Image
-          src={images[activeIndex]}
+          src={images[activeIndex]?.signedUrl ?? ''}
           alt={`Image ${activeIndex + 1}`}
           fill
           className="object-contain"

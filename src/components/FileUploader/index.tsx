@@ -1,5 +1,6 @@
 'use client';
 
+import { IProductImage } from '@/types/product.type';
 import { ArrowUpTrayIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { useRef } from 'react';
@@ -7,8 +8,8 @@ import IconButton from '../IconButton';
 
 interface Props {
   label?: string;
-  files: File[];
-  onChange: (files: File[]) => void;
+  files: (File | IProductImage)[];
+  onChange: (files: (File | IProductImage)[]) => void;
   maxFiles?: number;
   containerClassName?: string;
   disabled?: boolean;
@@ -18,7 +19,7 @@ const FileUploader = ({
   label,
   files,
   onChange,
-  maxFiles = 5,
+  maxFiles = 6,
   containerClassName,
   disabled,
 }: Props) => {
@@ -46,7 +47,6 @@ const FileUploader = ({
     >
       {label && <label className="mb-1 block text-sm font-semibold text-gray-500">{label}</label>}
 
-      {/* Upload Box */}
       <div
         onClick={() => inputRef.current?.click()}
         className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 transition hover:border-primary hover:bg-primary/5"
@@ -67,21 +67,21 @@ const FileUploader = ({
         />
       </div>
 
-      {/* Preview Grid */}
       {files.length > 0 && (
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {files.map((file, index) => {
-            const previewUrl = URL.createObjectURL(file);
-
+            const previewUrl =
+              file instanceof File ? URL.createObjectURL(file) : (file?.signedUrl ?? '');
+            const fileName = file instanceof File ? file.name : `Product-${index + 1}`;
             return (
               <div
-                key={`${file.name}-${index}`}
+                key={`${fileName}-${index}`}
                 className="relative overflow-hidden rounded-xl border border-gray-200 bg-white"
               >
                 <div className="relative aspect-square">
                   <Image
                     src={previewUrl}
-                    alt={file.name}
+                    alt={fileName}
                     fill
                     className="object-cover"
                     unoptimized
@@ -91,7 +91,7 @@ const FileUploader = ({
                 <div className="flex items-center gap-2 p-2">
                   <PhotoIcon className="h-4 w-4 shrink-0 text-gray-500" />
 
-                  <p className="truncate text-xs text-gray-600">{file.name}</p>
+                  <p className="truncate text-xs text-gray-600">{fileName}</p>
                 </div>
 
                 <IconButton

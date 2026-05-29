@@ -35,8 +35,16 @@ const productSlice = createSlice({
 
   extraReducers(builder) {
     builder.addMatcher(productApi.endpoints.createProduct.matchFulfilled, (state, { payload }) => {
-      if (payload?.body?.product) {
-        state.products = [payload.body.product, ...state.products];
+      if (payload?.body?.data) {
+        state.products = [payload.body.data, ...state.products];
+      }
+    });
+
+    builder.addMatcher(productApi.endpoints.editProduct.matchFulfilled, (state, { payload }) => {
+      if (payload?.body?.data) {
+        state.products = state.products.map(e =>
+          e?._id === payload.body?.data._id ? payload.body?.data : e,
+        );
       }
     });
 

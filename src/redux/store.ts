@@ -1,3 +1,5 @@
+import globalSocketListeners from '@/socket/globalSocketListeners';
+import socket from '@/socket/socket';
 import { logout } from '@/utils/authUtils';
 import {
   Action,
@@ -97,3 +99,6 @@ listenerMiddleware.startListening({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+//setup global socket listeners
+globalSocketListeners(socket, store);

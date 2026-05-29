@@ -1,8 +1,17 @@
-import { IBidWithUser, ICurrentAuction, IPopulatedAuction } from '@/types/auction.type';
+import {
+  AuctionStatusEnum,
+  IBidPlacedSocketPayload,
+  IBidWithUser,
+  ICurrentAuction,
+  IPopulatedAuction,
+  IUpdateExpiredAuctionsSocketPayload,
+  IUpdateLiveAuctionsSocketPayload,
+} from '@/types/auction.type';
 import { IPagination } from '@/types/common.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auctionApi } from '../api/auctions.api';
 import { RootState } from '../store';
+import { IUpdateCancelledAuctionsSocketPayload } from './../../types/auction.type';
 
 export const AUCTION_SLICE_KEY = 'auction';
 
@@ -32,6 +41,68 @@ const auctionSlice = createSlice({
 
     setCurrentAuction: (state, { payload }: PayloadAction<ICurrentAuction | null>) => {
       state.currentAuction = payload;
+    },
+
+    setUpdatedLiveAuction: (
+      state,
+      { payload }: PayloadAction<IUpdateLiveAuctionsSocketPayload>,
+    ) => {
+      const liveAuctionsSet = new Set(payload.data?.map(auction => auction._id));
+      const existingLiveAuctionsSet = new Set(state.auctions.map(auction => auction._id));
+
+      const newAuctions = payload.data.filter(e => !existingLiveAuctionsSet.has(e._id));
+
+      state.auctions = [...newAuctions, ...state.auctions];
+
+      if (state.currentAuction && liveAuctionsSet.has(state.currentAuction._id)) {
+        state.currentAuction.status = AuctionStatusEnum.Live;
+      }
+    },
+
+    setUpdatedExpiredAuctions: (
+      state,
+      { payload }: PayloadAction<IUpdateExpiredAuctionsSocketPayload>,
+    ) => {
+      const expiredAuctionsSet = new Set(payload.data.map(e => e._id));
+
+      state.auctions = state.auctions.map(e =>
+        expiredAuctionsSet.has(e._id) ? { ...e, status: AuctionStatusEnum.Completed } : e,
+      );
+
+      if (state.currentAuction && expiredAuctionsSet.has(state.currentAuction._id)) {
+        state.currentAuction.status = AuctionStatusEnum.Completed;
+      }
+    },
+
+    setUpdatedCancelledAuctions: (
+      state,
+      { payload }: PayloadAction<IUpdateCancelledAuctionsSocketPayload>,
+    ) => {
+      const cancelledAuctionsSet = new Set(payload.data.map(e => e._id));
+
+      state.auctions = state.auctions.map(e =>
+        cancelledAuctionsSet.has(e._id) ? { ...e, status: AuctionStatusEnum.Cancelled } : e,
+      );
+
+      if (state.currentAuction && cancelledAuctionsSet.has(state.currentAuction._id)) {
+        state.currentAuction.status = AuctionStatusEnum.Cancelled;
+      }
+    },
+
+    setPlaceBidData: (state, { payload }: PayloadAction<IBidPlacedSocketPayload>) => {
+      if (state.currentAuction) {
+        const placedBid: IBidWithUser = {
+          ...payload.data.bid,
+          user: payload.data.user as { email: string; name: string; profileImage: string },
+        };
+
+        state.currentAuction = {
+          ...state.currentAuction,
+          winningBid: placedBid,
+          bids: [placedBid, ...(state.currentAuction?.bids || [])],
+          expiresAt: payload.data.auctionExpiresAt,
+        };
+      }
     },
   },
 
@@ -65,27 +136,17 @@ const auctionSlice = createSlice({
         );
       }
     });
-
-    builder.addMatcher(auctionApi.endpoints.placeBid.matchFulfilled, (state, { payload }) => {
-      if (payload?.body?.data && state.currentAuction) {
-        const placedBid: IBidWithUser = {
-          ...payload?.body?.data,
-          user: {
-            email: payload?.body?.data?.user?.email,
-            name: payload?.body?.data?.user?.name,
-            profileImage: payload?.body?.data?.user?.profileImage,
-          },
-        };
-
-        state.currentAuction.bids = state.currentAuction?.bids?.length
-          ? [placedBid, ...state.currentAuction.bids]
-          : [placedBid];
-      }
-    });
   },
 });
 
-export const { setCurrentPageAuction, setCurrentAuction } = auctionSlice.actions;
+export const {
+  setCurrentPageAuction,
+  setCurrentAuction,
+  setUpdatedLiveAuction,
+  setPlaceBidData,
+  setUpdatedExpiredAuctions,
+  setUpdatedCancelledAuctions,
+} = auctionSlice.actions;
 
 export const getAuctionSlice = (rootState: RootState): IAuctionsSlice =>
   rootState[AUCTION_SLICE_KEY];

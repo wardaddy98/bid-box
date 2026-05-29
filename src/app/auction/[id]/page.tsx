@@ -6,16 +6,17 @@ import Badge from '@/components/Badge';
 import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
 import IconButton from '@/components/IconButton';
+import PlatformDetails from '@/components/PlatformDetails';
 import ProductDescription from '@/components/ProductDescription';
 import Rating from '@/components/Rating';
 import RecentBids from '@/components/RecentBids';
 import Review from '@/components/Review';
-import SellerDetails from '@/components/SellerDetails';
 import Tray from '@/components/Tray';
 import { useGetSingleAuctionQuery } from '@/redux/api/auctions.api';
 import { useAddBookmarkMutation, useRemoveBookmarkMutation } from '@/redux/api/user.api';
 import { getCurrentAuction } from '@/redux/slices/auction.slice';
 import { getUser, setIsLoading } from '@/redux/slices/auth.slice';
+import socket, { AuctionSocketEvents } from '@/socket/socket';
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { useParams } from 'next/navigation';
@@ -29,7 +30,10 @@ const Bid = () => {
     {
       auctionId: id as string,
     },
-    { skip: !id, refetchOnFocus: true },
+    {
+      skip: !id,
+      refetchOnFocus: true,
+    },
   );
   const [triggerAddBookmark, { isLoading: addBookmarkLoading }] = useAddBookmarkMutation();
   const [triggerRemoveBookmark, { isLoading: removeBookmarkLoading }] = useRemoveBookmarkMutation();
@@ -38,6 +42,16 @@ const Bid = () => {
 
   const dispatch = useDispatch();
   const currentAuction = useSelector(getCurrentAuction);
+
+  useEffect(() => {
+    if (!id) return;
+
+    socket.emit(AuctionSocketEvents.JOIN_AUCTION, id);
+
+    return () => {
+      socket.emit(AuctionSocketEvents.LEAVE_AUCTION, id);
+    };
+  }, [id]);
 
   useEffect(() => {
     if (!dispatch) return;
@@ -63,7 +77,7 @@ const Bid = () => {
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-6 my-6 lg:mx-32">
-        <div className="relative block overflow-hidden">
+        <div className="relative block overflow-hidden sm:max-w-[820px]">
           <IconButton
             onClick={isBookmarked ? handleRemoveBookmark : handleAddBookmark}
             name="bookmark"
@@ -98,7 +112,7 @@ const Bid = () => {
               <RecentBids bids={currentAuction?.bids ?? []} />
 
               <AuctionDetails />
-              <SellerDetails />
+              <PlatformDetails />
             </div>
 
             <ProductDescription description={currentAuction?.product?.description ?? ''} />
@@ -167,7 +181,7 @@ const Bid = () => {
           <AuctionCard currentAuction={currentAuction} />
           <RecentBids bids={currentAuction?.bids ?? []} />
           <AuctionDetails />
-          <SellerDetails />
+          <PlatformDetails />
         </div>
       </div>
       <Tray heading="Recently Viewed Auctions" />

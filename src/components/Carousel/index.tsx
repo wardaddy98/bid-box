@@ -2,6 +2,7 @@
 
 import Loading from '@/app/loading';
 import useBreakpoint from '@/hooks/useBreakpoint';
+import { IProductImage } from '@/types/product.type';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
@@ -15,7 +16,7 @@ const LightBox = dynamic(() => import('@/components/Lightbox'), {
 });
 
 interface Props {
-  images: string[];
+  images: IProductImage[];
   imageClassName?: string;
   imageContainerClassName?: string;
 }
@@ -60,15 +61,16 @@ export default function Carousel(props: Props) {
           style={{ transform: `translateX(-${index * 100}%)` }}
           {...handlers}
         >
-          {images.map((src, i) => (
+          {images.map((imageObj, i) => (
             <div key={i} className={`relative w-full shrink-0 ${imageContainerClassName}`}>
               <Image
-                src={src}
+                src={imageObj?.signedUrl ?? ''}
                 alt={`Slide ${i + 1}`}
                 fill
                 className={`object-contain ${imageClassName} cursor-pointer`}
                 onClick={toggleModalState}
                 draggable={false}
+                unoptimized
               />
             </div>
           ))}

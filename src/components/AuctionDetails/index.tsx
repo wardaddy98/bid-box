@@ -2,41 +2,39 @@ import { BanknotesIcon, FlagIcon } from '@heroicons/react/24/solid';
 import Accordion from '../Accordion';
 import Divider from '../Divider';
 
-interface Props {
-  test?: string;
-}
-
-const AuctionDetails = (props: Props) => {
+const AuctionDetails = () => {
   return (
     <div className="mt-6 rounded-none lg:rounded-2xl border-t-2 lg:border-2 border-gray-200 px-6 py-4">
       <span className="block font-semibold">Auction Details</span>
 
       <div className="mt-4 space-y-2">
         <Accordion
-          heading="1$ Auction"
+          heading="Direct Platform Auctions"
           headingIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
         >
           <p>
-            Auctions that start during the Inventory Liquidation Week event receive 99.999% off the
-            final sales price, meaning that most winners will pay just 1¢ for their auction win!
+            All products listed on BidBox are sold directly by the platform. No third-party sellers,
+            no middlemen.
           </p>
         </Accordion>
+
         <Accordion
-          heading="1$ Auction"
+          heading="Limited Inventory"
           headingIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
         >
           <p>
-            Auctions that start during the Inventory Liquidation Week event receive 99.999% off the
-            final sales price, meaning that most winners will pay just 1¢ for their auction win!
+            Most auction items are available in limited quantities and may not return once sold. Bid
+            strategically before the timer ends.
           </p>
         </Accordion>
+
         <Accordion
-          heading="1$ Auction"
+          heading="Fair Live Bidding"
           headingIcon={<BanknotesIcon className="h-4 w-4 text-green-600" />}
         >
           <p>
-            Auctions that start during the Inventory Liquidation Week event receive 99.999% off the
-            final sales price, meaning that most winners will pay just 1¢ for their auction win!
+            Auctions run in real-time with transparent bidding activity. The highest valid bid
+            before auction expiry wins the product.
           </p>
         </Accordion>
       </div>

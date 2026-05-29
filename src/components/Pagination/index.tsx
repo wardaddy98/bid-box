@@ -46,7 +46,7 @@ const Pagination = (props: Props) => {
       })}
 
       <Button
-        disabled={!(currentPage > totalPages)}
+        disabled={currentPage >= totalPages}
         variant="secondary"
         onClick={handleNext}
         endIcon={<ChevronRightIcon className="h-4 w-4" />}

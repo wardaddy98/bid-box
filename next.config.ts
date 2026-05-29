@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'bid-box.s3.ap-south-1.amazonaws.com',
+      },
     ],
   },
 };

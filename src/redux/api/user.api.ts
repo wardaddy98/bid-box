@@ -28,6 +28,14 @@ export interface IBookmarkPayload {
 
 export interface IBookmarkResponse extends ApiResponse<{ data: IUser }> {}
 
+export interface IUploadFilesResponse extends ApiResponse<{ data: string[] }> {}
+
+export interface IGetSignedUrlsResponse extends ApiResponse<{ data: string[] }> {}
+
+export interface IGetSignedUrlsPayload {
+  objectKeys: string[];
+}
+
 export const userApi = rootApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<ILoginResponse, ILoginPayload>({
@@ -61,6 +69,21 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+
+    uploadFiles: build.mutation<IUploadFilesResponse, FormData>({
+      query: payload => ({
+        url: '/upload',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+    getSignedUrls: build.query<IGetSignedUrlsResponse, IGetSignedUrlsPayload>({
+      query: payload => ({
+        url: '/upload',
+        method: 'GET',
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -69,4 +92,6 @@ export const {
   useRegisterMutation,
   useAddBookmarkMutation,
   useRemoveBookmarkMutation,
+  useUploadFilesMutation,
+  useLazyGetSignedUrlsQuery,
 } = userApi;

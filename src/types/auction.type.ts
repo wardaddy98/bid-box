@@ -1,5 +1,6 @@
 import { IBid } from './bid.type';
 import { IProduct } from './product.type';
+import { IUser } from './user.type';
 
 export enum AuctionStatusEnum {
   Pending = 'pending',
@@ -14,7 +15,9 @@ export interface IAuction {
   product: IProduct | string;
   startingBid: number;
   status: AuctionStatusEnum;
-  liveOn: Date;
+  winningBid?: string | IBid | IBidWithUser;
+  liveOn: string;
+  expiresAt: string | null;
 }
 
 export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> {
@@ -33,4 +36,21 @@ export interface IBidWithUser extends Omit<IBid, 'user'> {
 
 export interface ICurrentAuction extends IPopulatedAuction {
   bids: IBidWithUser[];
+}
+
+export interface IBidPlacedSocketPayload {
+  data: {
+    bid: IBid;
+    user: IUser;
+    auctionExpiresAt: string;
+  };
+}
+export interface IUpdateLiveAuctionsSocketPayload {
+  data: IPopulatedAuction[];
+}
+export interface IUpdateExpiredAuctionsSocketPayload {
+  data: IAuction[];
+}
+export interface IUpdateCancelledAuctionsSocketPayload {
+  data: IAuction[];
 }
