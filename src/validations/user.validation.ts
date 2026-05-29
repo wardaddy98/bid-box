@@ -16,9 +16,8 @@ export const createUserSchema = z
         'Password must contain uppercase, number, symbol and be 8-16 characters!',
       ),
     confirmPassword: z.string().min(1, 'Confirm password is required!'),
-    adminCode: z.string().length(4, 'Code should be 4 digits').optional(),
+    adminCode: z.string().optional(),
     isAdmin: z.boolean().optional(),
-    // profileImage: z.string().optional(),
     // googleId: z.string().optional(),
   })
   .superRefine((data, ctx) => {
@@ -35,6 +34,14 @@ export const createUserSchema = z
         code: 'custom',
         path: ['adminCode'],
         message: 'Admin code is required for admin users!',
+      });
+    }
+
+    if (data.adminCode && data.isAdmin && data.adminCode.length !== 4) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['adminCode'],
+        message: 'Admin code should be 4 digits!',
       });
     }
   });

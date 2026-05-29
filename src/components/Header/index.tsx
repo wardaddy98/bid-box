@@ -169,7 +169,7 @@ const Header = () => {
             {isLoggedIn && (
               <div className="flex items-center gap-8">
                 <div className="px-4 py-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
-                  <Avatar imageUrl="https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&amp;fit=crop&amp;q=80&amp;" />
+                  <Avatar imageUrl={user?.profileImage ?? ''} userName={user?.name ?? ''} />
                   <div className="flex flex-col items-center justify-center">
                     {user?.name && (
                       <div className="flex flex-col items-center justify-center">

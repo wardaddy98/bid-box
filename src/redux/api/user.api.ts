@@ -47,7 +47,7 @@ export const userApi = rootApi.injectEndpoints({
       //   transformResponse: (response: ILoginResponse) => response,
     }),
 
-    register: build.mutation<IRegisterResponse, IRegisterPayload>({
+    register: build.mutation<IRegisterResponse, FormData>({
       query: payload => ({
         url: '/user/register',
         method: 'POST',
