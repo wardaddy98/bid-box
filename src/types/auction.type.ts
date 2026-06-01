@@ -54,3 +54,13 @@ export interface IUpdateExpiredAuctionsSocketPayload {
 export interface IUpdateCancelledAuctionsSocketPayload {
   data: IAuction[];
 }
+
+export interface IBidPack {
+  readonly _id: string;
+  baseBids: number;
+  bonusBids: number;
+  price: number;
+  popular: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,6 +1,7 @@
 import {
   AuctionStatusEnum,
   IAuction,
+  IBidPack,
   IBidWithUser,
   ICurrentAuction,
   IPopulatedAuction,
@@ -37,6 +38,8 @@ export interface IPlaceBidPayload {
 }
 
 export type IPlaceBidResponse = ApiResponse<{ data: IBidWithUser }>;
+
+export type IGetBidPacksResponse = ApiResponse<{ data: IBidPack[] }>;
 
 export const auctionApi = rootApi.injectEndpoints({
   endpoints: build => ({
@@ -86,6 +89,13 @@ export const auctionApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+
+    getBidPacks: build.query<IGetBidPacksResponse, unknown>({
+      query: () => ({
+        url: '/bid/bid-pack',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -95,4 +105,5 @@ export const {
   useEditAuctionMutation,
   useGetSingleAuctionQuery,
   usePlaceBidMutation,
+  useGetBidPacksQuery,
 } = auctionApi;

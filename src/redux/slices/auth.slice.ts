@@ -66,6 +66,17 @@ export const authSlice = createSlice({
         state.user.bidsBalance = payload?.body?.data?.user?.bidsBalance;
       }
     });
+
+    builder.addMatcher(userApi.endpoints.verifyPayment.matchFulfilled, (state, { payload }) => {
+      if (
+        payload.body?.data.verified &&
+        payload?.body?.data?.user?.bidsBalance &&
+        state.user &&
+        state.user.email === payload.body?.data?.user?.email
+      ) {
+        state.user.bidsBalance = payload?.body?.data?.user?.bidsBalance;
+      }
+    });
   },
 });
 

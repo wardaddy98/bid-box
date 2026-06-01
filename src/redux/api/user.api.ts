@@ -1,4 +1,5 @@
-import { ApiResponse } from '@/types/common.type';
+import { ApiResponse, OrderTypeEnum } from '@/types/common.type';
+import { IRazorPaySuccessResponse } from '@/types/razorPay';
 import { IUser, UserRole } from '@/types/user.type';
 import { rootApi } from '../rootApi';
 
@@ -35,6 +36,20 @@ export interface IGetSignedUrlsResponse extends ApiResponse<{ data: string[] }> 
 export interface IGetSignedUrlsPayload {
   objectKeys: string[];
 }
+
+export type IVerifyPaymentResponse = ApiResponse<{
+  data: { verified: boolean; user?: { bidsBalance: number; email: string } };
+}>;
+
+export interface ICreateOrderPayload {
+  bidPack?: string;
+  string?: string;
+  orderType: OrderTypeEnum;
+}
+
+export type ICreateOrderResponse = ApiResponse<{
+  data: { razorPayOrderId: string; amount: number; orderId: string };
+}>;
 
 export const userApi = rootApi.injectEndpoints({
   endpoints: build => ({
@@ -84,6 +99,28 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+    createRazorPayOrder: build.mutation<ICreateOrderResponse, ICreateOrderPayload>({
+      query: payload => ({
+        url: '/order',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
+    verifyPayment: build.mutation<IVerifyPaymentResponse, IRazorPaySuccessResponse>({
+      query: payload => ({
+        url: '/order/verify',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+    updateFailedPayment: build.mutation<ApiResponse<{}>, { orderId: string }>({
+      query: payload => ({
+        url: '/order/failure',
+        method: 'PATCH',
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -94,4 +131,7 @@ export const {
   useRemoveBookmarkMutation,
   useUploadFilesMutation,
   useLazyGetSignedUrlsQuery,
+  useCreateRazorPayOrderMutation,
+  useVerifyPaymentMutation,
+  useUpdateFailedPaymentMutation,
 } = userApi;

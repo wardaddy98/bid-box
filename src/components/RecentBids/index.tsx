@@ -46,7 +46,7 @@ const RecentBids = (props: RecentBidsProps) => {
           <>
             <Divider className="my-2" />
 
-            <span className="my-4 block font-semibold">Other Bidders in this Auction</span>
+            <span className="my-4 block font-semibold">Other Bids in this Auction</span>
             <div className="flex items-center justify-between">
               <div className="flex items-center justify-start gap-4">
                 {remainingBids.slice(0, 5).map((bid, idx) => (

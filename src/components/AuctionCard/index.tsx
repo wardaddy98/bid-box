@@ -2,7 +2,7 @@
 import { IPlaceBidPayload, usePlaceBidMutation } from '@/redux/api/auctions.api';
 import { getUser } from '@/redux/slices/auth.slice';
 import { AuctionStatusEnum, ICurrentAuction } from '@/types/auction.type';
-import { formatAmount, isoDateToHMSFormat } from '@/utils/commonUtils';
+import { formatAmount } from '@/utils/commonUtils';
 import validateUserInput from '@/utils/validateUserInput';
 import { placeBidSchema } from '@/validations/auction.validation';
 import { BoltIcon, ClockIcon, FireIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
@@ -86,12 +86,6 @@ const AuctionCard = (props: Props) => {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      {currentAuction?.expiresAt && (
-        <span className="text-lg font-semibold">
-          {`${new Date(currentAuction?.expiresAt).getDate()}/${new Date(currentAuction?.expiresAt).getMonth()}/${new Date(currentAuction?.expiresAt).getUTCFullYear()} ` +
-            isoDateToHMSFormat(currentAuction?.expiresAt)}
-        </span>
-      )}
       <div
         className={`
             px-6 py-4 border-b border-gray-200
@@ -168,9 +162,11 @@ const AuctionCard = (props: Props) => {
             </h1>
 
             <div className="mt-4 flex items-center gap-3">
-              {lastBid?.user?.profileImage && (
-                <Avatar imageUrl={lastBid?.user?.profileImage} size={10} />
-              )}
+              <Avatar
+                userName={lastBid?.user.name}
+                imageUrl={lastBid?.user?.profileImage}
+                size={10}
+              />
 
               <div className="flex flex-col">
                 <span className="text-xs font-semibold uppercase text-gray-400">
