@@ -1,9 +1,30 @@
 'use client';
 import LottieAnimation from '@/components/LottieAnimation';
 import WinnerCard from '@/components/WinnerCard';
+import { useGetWinnersQuery } from '@/redux/api/auctions.api';
+import { setIsLoading } from '@/redux/slices/auth.slice';
+import { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import FireAnimationJSON from '../../../public/assets/fire_animation.json';
 
 const Winners = () => {
+  const { isFetching, data } = useGetWinnersQuery({});
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!dispatch) return;
+
+    dispatch(setIsLoading(isFetching));
+    return () => {
+      dispatch(setIsLoading(false));
+    };
+  }, [dispatch, isFetching]);
+
+  const winnersData = useMemo(() => {
+    return data?.body?.data ?? [];
+  }, [data]);
+
   return (
     <div>
       <main className="bg-accent lg:grid lg:place-content-center rounded-lg">
@@ -12,7 +33,7 @@ const Winners = () => {
             <p className="text-lg font-semibold text-gray-500">Real People, Real Wins.</p>
 
             <h1 className="mt-4 text-3xl lg:text-4xl font-bold text-gray-900 sm:text-5xl">
-              Thousands of auctions won every day–by real people like
+              Thousands of auctions won every day by real people like
               <strong className="text-primary"> you. </strong>
             </h1>
 
@@ -29,8 +50,8 @@ const Winners = () => {
           <span className="font-semibold">Last 10 winners</span>
         </div>
         <div className="mt-4  flex flex-col gap-6">
-          {[...Array(10)].map((_, idx) => (
-            <WinnerCard key={idx} />
+          {winnersData.map((winnerAuction, idx) => (
+            <WinnerCard auction={winnerAuction} key={idx} />
           ))}
         </div>
       </section>

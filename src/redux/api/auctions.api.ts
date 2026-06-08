@@ -5,6 +5,7 @@ import {
   IBidWithUser,
   ICurrentAuction,
   IPopulatedAuction,
+  IPopulatedAuctionWithBidsAndWinningBid,
 } from '@/types/auction.type';
 import { ApiResponse, PaginatedApiResponse } from '@/types/common.type';
 import { ProductCategoryEnum } from '@/types/product.type';
@@ -40,6 +41,7 @@ export interface IPlaceBidPayload {
 export type IPlaceBidResponse = ApiResponse<{ data: IBidWithUser }>;
 
 export type IGetBidPacksResponse = ApiResponse<{ data: IBidPack[] }>;
+export type IGetWinnersResponse = ApiResponse<{ data: IPopulatedAuctionWithBidsAndWinningBid[] }>;
 
 export const auctionApi = rootApi.injectEndpoints({
   endpoints: build => ({
@@ -96,6 +98,12 @@ export const auctionApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getWinners: build.query<IGetWinnersResponse, unknown>({
+      query: () => ({
+        url: '/auction/winners',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -106,4 +114,5 @@ export const {
   useGetSingleAuctionQuery,
   usePlaceBidMutation,
   useGetBidPacksQuery,
+  useGetWinnersQuery,
 } = auctionApi;

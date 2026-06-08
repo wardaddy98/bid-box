@@ -12,7 +12,7 @@ import {
 } from '@/redux/api/user.api';
 import { setIsLoading } from '@/redux/slices/auth.slice';
 import { IBidPack } from '@/types/auction.type';
-import { OrderTypeEnum } from '@/types/common.type';
+import { OrderTypeEnum } from '@/types/order.type';
 import { IRazorPayErrorResponse, IRazorPaySuccessResponse } from '@/types/razorPay';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { useEffect, useMemo, useState } from 'react';

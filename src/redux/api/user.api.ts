@@ -1,4 +1,5 @@
-import { ApiResponse, OrderTypeEnum } from '@/types/common.type';
+import { ApiResponse } from '@/types/common.type';
+import { OrderTypeEnum } from '@/types/order.type';
 import { IRazorPaySuccessResponse } from '@/types/razorPay';
 import { IUser, UserRole } from '@/types/user.type';
 import { rootApi } from '../rootApi';

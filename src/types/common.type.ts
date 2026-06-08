@@ -18,9 +18,3 @@ export interface PaginatedApiResponse<T> {
     pagination: IPagination;
   };
 }
-
-export enum OrderTypeEnum {
-  'Bids Pack' = 'bids_pack',
-  Auction = 'auction',
-  product = 'product',
-}
