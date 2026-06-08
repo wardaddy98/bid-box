@@ -77,9 +77,7 @@ const auctionSlice = createSlice({
     ) => {
       const cancelledAuctionsSet = new Set(payload.data.map(e => e._id));
 
-      state.auctions = state.auctions.map(e =>
-        cancelledAuctionsSet.has(e._id) ? { ...e, status: AuctionStatusEnum.Cancelled } : e,
-      );
+      state.auctions = state.auctions.filter(e => !cancelledAuctionsSet.has(e._id));
 
       if (state.currentAuction && cancelledAuctionsSet.has(state.currentAuction._id)) {
         state.currentAuction.status = AuctionStatusEnum.Cancelled;

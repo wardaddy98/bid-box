@@ -17,7 +17,7 @@ import { useAddBookmarkMutation, useRemoveBookmarkMutation } from '@/redux/api/u
 import { getCurrentAuction } from '@/redux/slices/auction.slice';
 import { getUser, setIsLoading } from '@/redux/slices/auth.slice';
 import socket, { AuctionSocketEvents } from '@/socket/socket';
-import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline';
+import { BookmarkIcon as BookmarkIconOutline, CubeIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
@@ -105,6 +105,10 @@ const Bid = () => {
             <div className="mt-4 flex flex-wrap gap-2 items-center px-3 lg:px-6">
               <Badge text={`Auction ID- ${currentAuction?.auctionId ?? ''}`} />
               <Badge text={`Product ID- ${currentAuction?.product?.productId ?? ''}`} />
+              <Badge
+                icon={<CubeIcon className="h-4 w-4" />}
+                text={`Available Stock- ${currentAuction?.product?.availableStock ?? 0}`}
+              />
             </div>
 
             <div className="mt-4 block lg:hidden">

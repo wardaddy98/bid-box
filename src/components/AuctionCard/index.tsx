@@ -320,7 +320,13 @@ const AuctionCard = (props: Props) => {
                     </h2>
                   </div>
 
-                  <Button variant="primary" onClick={handleBuyNow}>
+                  <Button
+                    variant="primary"
+                    disabled={
+                      isLastBidByCurrentUser && currentAuction?.status === AuctionStatusEnum.Live
+                    }
+                    onClick={handleBuyNow}
+                  >
                     Buy Now
                   </Button>
                 </div>

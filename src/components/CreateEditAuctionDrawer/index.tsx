@@ -10,6 +10,7 @@ import { setIsLoading } from '@/redux/slices/auth.slice';
 import { formatAmount } from '@/utils/commonUtils';
 import validateUserInput from '@/utils/validateUserInput';
 import { createAuctionSchema, editAuctionSchema } from '@/validations/auction.validation';
+import _ from 'lodash';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Button from '../Button';
@@ -97,6 +98,12 @@ const CreateEditAuctionDrawer = (props: CreateEditAuctionDrawerProps) => {
     }
   };
 
+  const selectedProduct = useMemo(() => {
+    const selectedId = isEdit ? editFormValues?.product : formValues.product;
+
+    return productsResponse?.body?.data?.find(p => p._id === selectedId);
+  }, [productsResponse, formValues.product, editFormValues?.product, isEdit]);
+
   return (
     <Drawer
       open={drawerState}
@@ -111,6 +118,58 @@ const CreateEditAuctionDrawer = (props: CreateEditAuctionDrawerProps) => {
         containerClassName="mt-4"
         disabled={isLoading || isEdit}
       />
+
+      {selectedProduct && (
+        <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-gray-900">Product Details</span>
+
+            <span className="text-xs font-medium text-gray-500">{selectedProduct.productId}</span>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-xs text-gray-500">Title</span>
+
+              <p className="font-medium">{selectedProduct.title}</p>
+            </div>
+
+            <div>
+              <span className="text-xs text-gray-500">Category</span>
+
+              <p className="font-medium">{_.capitalize(selectedProduct.category)}</p>
+            </div>
+
+            <div>
+              <span className="text-xs text-gray-500">Selling Price</span>
+
+              <p className="font-semibold text-green-600">
+                {formatAmount(selectedProduct.sellingPrice)}
+              </p>
+            </div>
+
+            <div>
+              <span className="text-xs text-gray-500">Direct Buy Cost</span>
+
+              <p className="font-semibold text-blue-600">
+                {(selectedProduct.sellingPrice / 100).toLocaleString('en-IN')} bids
+              </p>
+            </div>
+
+            <div>
+              <span className="text-xs text-gray-500">Available Stock</span>
+
+              <p className="font-medium">{selectedProduct.availableStock}</p>
+            </div>
+
+            <div>
+              <span className="text-xs text-gray-500">Images</span>
+
+              <p className="font-medium">{selectedProduct.productImages.length}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <TextInput
         name="startingBid"
@@ -156,6 +215,16 @@ const CreateEditAuctionDrawer = (props: CreateEditAuctionDrawerProps) => {
           ) : null
         }
       />
+
+      {selectedProduct &&
+        Number((isEdit ? editFormValues?.startingBid : formValues?.startingBid) || 0) >=
+          selectedProduct.sellingPrice / 100 && (
+          <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+            <span className="text-sm font-medium text-yellow-800">
+              Starting bid is greater than or equal to the direct purchase cost of this product.
+            </span>
+          </div>
+        )}
 
       <DateTimePicker
         label="Live On"
