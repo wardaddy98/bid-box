@@ -27,6 +27,7 @@ export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> 
 
 export interface IBidWithUser extends Omit<IBid, 'user'> {
   user: {
+    readonly _id: string;
     email: string;
     name: string;
     profileImage: string;

@@ -191,7 +191,6 @@ const LiveAuctionCard = (props: Props) => {
               <Button variant="primary" onClick={() => joinAuction(auction.auctionId)}>
                 Join Auction
               </Button>
-              <Button variant="text">{`But it now for ${formatAmount(auction?.product.sellingPrice)}`}</Button>
             </div>
           </>
         )}

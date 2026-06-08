@@ -41,14 +41,24 @@ export type IVerifyPaymentResponse = ApiResponse<{
   data: { verified: boolean; user?: { bidsBalance: number; email: string } };
 }>;
 
-export interface ICreateOrderPayload {
+export interface ICreateRazorPayOrderPayload {
   bidPack?: string;
   string?: string;
   orderType: OrderTypeEnum;
 }
 
-export type ICreateOrderResponse = ApiResponse<{
+export type ICreateRazorPayOrderResponse = ApiResponse<{
   data: { razorPayOrderId: string; amount: number; orderId: string };
+}>;
+
+export interface ICreateDirectPurchaseOrderPayload {
+  auctionId?: string;
+  productId: string;
+  netDeduction: number;
+}
+
+export type ICreateDirectPurchaseOrderResponse = ApiResponse<{
+  data: { bidsBalance: number; availableStock: number };
 }>;
 
 export const userApi = rootApi.injectEndpoints({
@@ -99,9 +109,20 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
-    createRazorPayOrder: build.mutation<ICreateOrderResponse, ICreateOrderPayload>({
+    createRazorPayOrder: build.mutation<ICreateRazorPayOrderResponse, ICreateRazorPayOrderPayload>({
       query: payload => ({
         url: '/order',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
+    createDirectPurchaseOrder: build.mutation<
+      ICreateDirectPurchaseOrderResponse,
+      ICreateDirectPurchaseOrderPayload
+    >({
+      query: payload => ({
+        url: '/order/product',
         method: 'POST',
         body: payload,
       }),
@@ -134,4 +155,5 @@ export const {
   useCreateRazorPayOrderMutation,
   useVerifyPaymentMutation,
   useUpdateFailedPaymentMutation,
+  useCreateDirectPurchaseOrderMutation,
 } = userApi;

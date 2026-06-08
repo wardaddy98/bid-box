@@ -10,6 +10,7 @@ import {
 import { IPagination } from '@/types/common.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auctionApi } from '../api/auctions.api';
+import { userApi } from '../api/user.api';
 import { RootState } from '../store';
 import { IUpdateCancelledAuctionsSocketPayload } from './../../types/auction.type';
 
@@ -48,11 +49,7 @@ const auctionSlice = createSlice({
       { payload }: PayloadAction<IUpdateLiveAuctionsSocketPayload>,
     ) => {
       const liveAuctionsSet = new Set(payload.data?.map(auction => auction._id));
-      const existingLiveAuctionsSet = new Set(state.auctions.map(auction => auction._id));
-
-      const newAuctions = payload.data.filter(e => !existingLiveAuctionsSet.has(e._id));
-
-      state.auctions = [...newAuctions, ...state.auctions];
+      state.auctions = payload.data;
 
       if (state.currentAuction && liveAuctionsSet.has(state.currentAuction._id)) {
         state.currentAuction.status = AuctionStatusEnum.Live;
@@ -93,7 +90,12 @@ const auctionSlice = createSlice({
       if (state.currentAuction) {
         const placedBid: IBidWithUser = {
           ...payload.data.bid,
-          user: payload.data.user as { email: string; name: string; profileImage: string },
+          user: payload.data.user as {
+            _id: string;
+            email: string;
+            name: string;
+            profileImage: string;
+          },
         };
 
         state.currentAuction = {
@@ -136,6 +138,15 @@ const auctionSlice = createSlice({
         );
       }
     });
+
+    builder.addMatcher(
+      userApi.endpoints.createDirectPurchaseOrder.matchFulfilled,
+      (state, { payload }) => {
+        if (state.currentAuction) {
+          state.currentAuction.product.availableStock = payload.body?.data?.availableStock ?? 0;
+        }
+      },
+    );
   },
 });
 

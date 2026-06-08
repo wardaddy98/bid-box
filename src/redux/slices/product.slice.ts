@@ -1,6 +1,7 @@
 import { IPagination } from '@/types/common.type';
 import { IProduct } from '@/types/product.type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { auctionApi } from '../api/auctions.api';
 import { productApi } from '../api/product.api';
 import { RootState } from '../store';
 
@@ -51,6 +52,14 @@ const productSlice = createSlice({
     builder.addMatcher(productApi.endpoints.getAllProducts.matchFulfilled, (state, { payload }) => {
       state.products = payload?.body?.data ?? [];
       state.pagination = payload.body.pagination;
+    });
+
+    builder.addMatcher(auctionApi.endpoints.createAuction.matchFulfilled, (state, { payload }) => {
+      const product = payload.body?.data.product;
+      if (product)
+        state.products = state.products?.map(e =>
+          e._id === product._id ? { ...e, availableStock: product.availableStock } : e,
+        );
     });
   },
 });

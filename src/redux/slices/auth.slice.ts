@@ -77,6 +77,15 @@ export const authSlice = createSlice({
         state.user.bidsBalance = payload?.body?.data?.user?.bidsBalance;
       }
     });
+
+    builder.addMatcher(
+      userApi.endpoints.createDirectPurchaseOrder.matchFulfilled,
+      (state, { payload }) => {
+        if (state.user) {
+          state.user.bidsBalance = payload?.body?.data?.bidsBalance ?? 0;
+        }
+      },
+    );
   },
 });
 
