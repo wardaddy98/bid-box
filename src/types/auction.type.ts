@@ -18,6 +18,8 @@ export interface IAuction {
   winningBid?: string | IBid | IBidWithUser;
   liveOn: string;
   expiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> {
@@ -65,3 +67,8 @@ export interface IBidPack {
   createdAt: string;
   updatedAt: string;
 }
+
+export type IPopulatedAuctionWithBidsAndWinningBid = Omit<IPopulatedAuction, 'winningBid'> & {
+  winningBid: IBidWithUser;
+  bids: IBidWithUser[];
+};
