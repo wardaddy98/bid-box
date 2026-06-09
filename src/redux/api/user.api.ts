@@ -24,6 +24,8 @@ export interface IRegisterPayload {
 
 export type IRegisterResponse = ILoginResponse;
 
+export type IHandleGoogleOAuthResponse = ILoginResponse;
+
 export interface IBookmarkPayload {
   auctionId: string;
 }
@@ -74,6 +76,14 @@ export const userApi = rootApi.injectEndpoints({
     register: build.mutation<IRegisterResponse, FormData>({
       query: payload => ({
         url: '/user/register',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+
+    handleGoogleOAuth: build.mutation<IHandleGoogleOAuthResponse, { credential: string }>({
+      query: payload => ({
+        url: '/user/google-auth',
         method: 'POST',
         body: payload,
       }),
@@ -165,4 +175,5 @@ export const {
   useUpdateFailedPaymentMutation,
   useCreateDirectPurchaseOrderMutation,
   useLazyGetAllOrdersQuery,
+  useHandleGoogleOAuthMutation,
 } = userApi;

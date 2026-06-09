@@ -3,16 +3,19 @@ import Button from '@/components/Button';
 import LottieAnimation from '@/components/LottieAnimation';
 import NavButton from '@/components/NavButton';
 import TextInput from '@/components/TextInput';
+import useBreakpoint from '@/hooks/useBreakpoint';
 import useIsLoggedIn from '@/hooks/useIsLoggedIn';
-import GoogleIcon from '@/icons/GoogleIcon';
-import { useLoginMutation } from '@/redux/api/user.api';
+import { useHandleGoogleOAuthMutation, useLoginMutation } from '@/redux/api/user.api';
+import { setIsLoading } from '@/redux/slices/auth.slice';
 import validateUserInput from '@/utils/validateUserInput';
 import { loginSchema } from '@/validations/user.validation';
+import { GoogleLogin } from '@react-oauth/google';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import LoginAnimationJson from '../../../../public/assets/login_animation.json';
-
 interface FormValues {
   email: string;
   password: string;
@@ -20,14 +23,28 @@ interface FormValues {
 
 const Login = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { isLoggedIn } = useIsLoggedIn();
 
+  const { isBase: findIsBase } = useBreakpoint();
+  const isBase = findIsBase();
+
   const [executeLogin, { isLoading }] = useLoginMutation();
+  const [executeGoogleOAuth, { isLoading: isLoadingGoogleOauth }] = useHandleGoogleOAuthMutation();
 
   const [formValues, setFormValues] = useState<FormValues>({
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    if (!dispatch) return;
+
+    dispatch(setIsLoading(isLoading || isLoadingGoogleOauth));
+    return () => {
+      dispatch(setIsLoading(false));
+    };
+  }, [dispatch, isLoading, isLoadingGoogleOauth]);
 
   useEffect(() => {
     if (router && isLoggedIn) router.replace('/');
@@ -65,15 +82,19 @@ const Login = () => {
 
           <p className="mt-6 text-xl text-center text-gray-600 font-semibold">Welcome back!</p>
 
-          <Button
-            variant="secondary"
-            startIcon={<GoogleIcon className="w-6 h-6" />}
-            onClick={() => {}}
-            className="w-full mt-6"
-            childrenClassName="text-center block w-full"
-          >
-            Sign in with Google
-          </Button>
+          <div className="mt-6 w-full flex justify-center">
+            <GoogleLogin
+              size={isBase ? 'medium' : 'large'}
+              onError={() => {
+                toast.error('Login failed! Please retry.');
+              }}
+              onSuccess={async credentialResponse => {
+                await executeGoogleOAuth({
+                  credential: credentialResponse?.credential ?? '',
+                });
+              }}
+            />
+          </div>
 
           <div className="flex items-center justify-between mt-4">
             <span className="w-1/5 border-b border-gray-200 lg:w-1/4"></span>
