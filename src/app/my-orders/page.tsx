@@ -5,6 +5,7 @@ import Divider from '@/components/Divider';
 import Select from '@/components/Select';
 import TextInput from '@/components/TextInput';
 import useDebounce from '@/hooks/useDebounce';
+import useIsAdmin from '@/hooks/useIsAdmin';
 import { useLazyGetAllOrdersQuery } from '@/redux/api/user.api';
 import { setIsLoading } from '@/redux/slices/auth.slice';
 import { IOrder, OrderPaymentStatusEnum, OrderTypeEnum } from '@/types/order.type';
@@ -18,10 +19,14 @@ import {
   TrophyIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 const MyOrders = () => {
+  const { isAdmin } = useIsAdmin();
+  const router = useRouter();
+
   const [triggerGetAllOrders, { isFetching, data }] = useLazyGetAllOrdersQuery();
 
   const dispatch = useDispatch();
@@ -39,6 +44,11 @@ const MyOrders = () => {
       dispatch(setIsLoading(false));
     };
   }, [dispatch, isFetching]);
+
+  useEffect(() => {
+    if (!router) return;
+    if (isAdmin) router.replace('/');
+  }, [router, isAdmin]);
 
   const debouncedSearchFilter = useDebounce(searchFilter, 500);
 

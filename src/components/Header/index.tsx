@@ -39,7 +39,7 @@ const Header = () => {
     {
       label: 'My Profile',
       startIcon: <UserCircleIcon className="h-4 w-4" />,
-      onClick: () => router.push('/profile'),
+      onClick: () => router.push('/my-profile'),
     },
     {
       label: 'Log Out',
