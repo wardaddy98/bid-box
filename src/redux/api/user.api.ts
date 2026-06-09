@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/types/common.type';
-import { IOrder, OrderPaymentStatusEnum, OrderTypeEnum } from '@/types/order.type';
+import { IOrder, OrderPaymentStatusEnum } from '@/types/order.type';
 import { IRazorPaySuccessResponse } from '@/types/razorPay';
 import { IUser, UserRole } from '@/types/user.type';
 import { rootApi } from '../rootApi';
@@ -43,9 +43,7 @@ export type IVerifyPaymentResponse = ApiResponse<{
 }>;
 
 export interface ICreateRazorPayOrderPayload {
-  bidPack?: string;
-  string?: string;
-  orderType: OrderTypeEnum;
+  bidPack: string;
 }
 
 export type ICreateRazorPayOrderResponse = ApiResponse<{

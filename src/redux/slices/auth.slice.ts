@@ -74,7 +74,7 @@ export const authSlice = createSlice({
         state.user &&
         state.user.email === payload.body?.data?.user?.email
       ) {
-        state.user.bidsBalance = payload?.body?.data?.user?.bidsBalance;
+        state.user.bidsBalance = Number(payload?.body?.data?.user?.bidsBalance ?? 0);
       }
     });
 
