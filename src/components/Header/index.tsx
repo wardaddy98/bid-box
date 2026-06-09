@@ -9,6 +9,11 @@ import { logout } from '@/utils/authUtils';
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
+  ClipboardDocumentListIcon,
+  CurrencyRupeeIcon,
+  MegaphoneIcon,
+  QuestionMarkCircleIcon,
+  TrophyIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -60,7 +65,27 @@ const Header = () => {
     {
       label: 'Auctions',
       onClick: () => router.push('/auctions'),
-      startIcon: <ArrowLeftEndOnRectangleIcon className="h-4 w-4" />,
+      startIcon: <MegaphoneIcon className="h-4 w-4" />,
+    },
+    {
+      label: 'Get Bids',
+      onClick: () => router.push('/bid'),
+      startIcon: <CurrencyRupeeIcon className="h-4 w-4" />,
+    },
+    {
+      label: 'How it works?',
+      onClick: () => router.push('/info'),
+      startIcon: <QuestionMarkCircleIcon className="h-4 w-4" />,
+    },
+    {
+      label: 'Winners',
+      onClick: () => router.push('/winners'),
+      startIcon: <TrophyIcon className="h-4 w-4" />,
+    },
+    {
+      label: 'My Orders',
+      onClick: () => router.push('/my-orders'),
+      startIcon: <ClipboardDocumentListIcon className="h-4 w-4" />,
     },
   ];
 
@@ -159,6 +184,16 @@ const Header = () => {
                         className="px-0 py-0"
                       >
                         Winners
+                      </NavButton>
+                    </li>
+                    <li>
+                      <NavButton
+                        active={isActive('my-orders')}
+                        href="/my-orders"
+                        variant="text"
+                        className="px-0 py-0"
+                      >
+                        My Orders
                       </NavButton>
                     </li>
                   </>

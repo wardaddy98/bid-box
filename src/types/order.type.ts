@@ -1,3 +1,7 @@
+import { IBidPack, IPopulatedAuction } from './auction.type';
+import { IProduct } from './product.type';
+import { IUser } from './user.type';
+
 export enum OrderTypeEnum {
   'Bids Pack' = 'bids_pack',
   Auction = 'auction',
@@ -13,11 +17,15 @@ export enum OrderPaymentStatusEnum {
 export interface IOrder {
   readonly _id: string;
   orderId: string;
+  user: IUser;
+  amount: number;
+  razorPayOrderId?: string;
+  razorPayMetaData?: unknown;
+  product?: IProduct;
+  auction?: IPopulatedAuction;
+  bidPack?: IBidPack;
   orderType: OrderTypeEnum;
   paymentStatus: OrderPaymentStatusEnum;
-  amount: number;
   createdAt: string;
-  //   updatedAt: string;
-  title: string;
-  image?: string;
+  updatedAt: string;
 }

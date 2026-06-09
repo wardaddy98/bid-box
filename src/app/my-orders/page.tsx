@@ -1,190 +1,246 @@
 'use client';
 
 import Badge from '@/components/Badge';
-import Button from '@/components/Button';
 import Divider from '@/components/Divider';
+import Select from '@/components/Select';
+import TextInput from '@/components/TextInput';
+import useDebounce from '@/hooks/useDebounce';
+import { useLazyGetAllOrdersQuery } from '@/redux/api/user.api';
+import { setIsLoading } from '@/redux/slices/auth.slice';
+import { IOrder, OrderPaymentStatusEnum, OrderTypeEnum } from '@/types/order.type';
+import { formatAmount, generateSelectOptionsFromEnum } from '@/utils/commonUtils';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
-  CalendarDaysIcon,
+  BanknotesIcon,
+  CheckCircleIcon,
+  ClockIcon,
   CubeIcon,
-  //   GavelIcon,
-  WalletIcon,
+  TrophyIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/solid';
-import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-const orders = [
-  {
-    _id: '1',
-    orderId: 'ORD-20260001',
-    orderType: 'auction',
-    paymentStatus: 'success',
-    amount: 2499,
-    createdAt: '2026-06-03T12:00:00Z',
-    auction: {
-      auctionId: 'AUC-1001',
-      productTitle: 'Samsung 55" Smart TV',
-    },
-  },
-  {
-    _id: '2',
-    orderId: 'ORD-20260002',
-    orderType: 'product',
-    paymentStatus: 'success',
-    amount: 14999,
-    createdAt: '2026-06-01T12:00:00Z',
-    product: {
-      productId: 'PROD-1002',
-      title: 'PlayStation 5',
-    },
-  },
-  {
-    _id: '3',
-    orderId: 'ORD-20260003',
-    orderType: 'bids_pack',
-    paymentStatus: 'success',
-    amount: 500,
-    createdAt: '2026-05-30T12:00:00Z',
-    bidPack: {
-      baseBids: 5,
-      bonusBids: 2,
-    },
-  },
-];
+const MyOrders = () => {
+  const [triggerGetAllOrders, { isFetching, data }] = useLazyGetAllOrdersQuery();
 
-const getOrderIcon = (type: string) => {
-  switch (type) {
-    case 'auction':
-      return <WalletIcon className="h-5 w-5 text-primary" />;
+  const dispatch = useDispatch();
 
-    case 'product':
-      return <CubeIcon className="h-5 w-5 text-primary" />;
+  const [orderPaymentStatusFilter, setOrderPaymentStatusFilter] = useState<
+    OrderPaymentStatusEnum | 'all'
+  >('all');
+  const [searchFilter, setSearchFilter] = useState<string>('');
 
-    default:
-      return <WalletIcon className="h-5 w-5 text-primary" />;
-  }
-};
+  useEffect(() => {
+    if (!dispatch) return;
 
-const getOrderTitle = (order: (typeof orders)[0]) => {
-  switch (order.orderType) {
-    case 'auction':
-      return order.auction?.productTitle;
+    dispatch(setIsLoading(isFetching));
+    return () => {
+      dispatch(setIsLoading(false));
+    };
+  }, [dispatch, isFetching]);
 
-    case 'product':
-      return order.product?.title;
+  const debouncedSearchFilter = useDebounce(searchFilter, 500);
 
-    case 'bids_pack':
-      return `${order.bidPack?.baseBids ?? 0} Bids + ${order.bidPack?.bonusBids ?? 0} Bonus`;
+  useEffect(() => {
+    if (!triggerGetAllOrders) return;
 
-    default:
-      return '-';
-  }
-};
+    triggerGetAllOrders({
+      paymentStatus: orderPaymentStatusFilter,
+      search: debouncedSearchFilter,
+    });
+  }, [triggerGetAllOrders, debouncedSearchFilter, orderPaymentStatusFilter]);
 
-const getStatusBadge = (status: string) => {
-  switch (status) {
-    case 'success':
-      return <Badge text="Success" />;
+  const orderPaymentStatusOptions = generateSelectOptionsFromEnum(OrderPaymentStatusEnum);
 
-    case 'pending':
-      return <Badge text="Pending" />;
+  const orders = useMemo(() => {
+    return data?.body?.data ?? [];
+  }, [data]);
 
-    default:
-      return <Badge text="Failed" />;
-  }
-};
+  const getStatusBadge = (status: OrderPaymentStatusEnum) => {
+    switch (status) {
+      case OrderPaymentStatusEnum.Success:
+        return (
+          <div className="flex items-center gap-2 text-green-600">
+            <CheckCircleIcon className="h-5 w-5" />
+            <span className="font-semibold">Success</span>
+          </div>
+        );
 
-export default function MyOrders() {
+      case OrderPaymentStatusEnum.Pending:
+        return (
+          <div className="flex items-center gap-2 text-yellow-600">
+            <ClockIcon className="h-5 w-5" />
+            <span className="font-semibold">Pending</span>
+          </div>
+        );
+
+      case OrderPaymentStatusEnum.Failed:
+        return (
+          <div className="flex items-center gap-2 text-red-600">
+            <XCircleIcon className="h-5 w-5" />
+            <span className="font-semibold">Failed</span>
+          </div>
+        );
+    }
+  };
+
+  const getOrderTypeDetails = (order: IOrder) => {
+    switch (order.orderType) {
+      case OrderTypeEnum['Bids Pack']:
+        return {
+          icon: <BanknotesIcon className="h-6 w-6 text-primary" />,
+          title: `${(order.bidPack?.baseBids ?? 0) + (order.bidPack?.bonusBids ?? 0)} Bids Purchased`,
+          subtitle: `${order.bidPack?.baseBids ?? 0} Base + ${order.bidPack?.bonusBids ?? 0} Bonus Bids`,
+        };
+
+      case OrderTypeEnum.Product:
+        return {
+          icon: <CubeIcon className="h-6 w-6 text-primary" />,
+          title: order.product?.title ?? 'Product Purchase',
+          subtitle: `Direct Product Purchase`,
+        };
+
+      case OrderTypeEnum.Auction:
+        return {
+          icon: <TrophyIcon className="h-6 w-6 text-primary" />,
+          title: order.auction?.product?.title ?? 'Auction Win',
+          subtitle: `Auction Order`,
+        };
+
+      default:
+        return {
+          icon: <CubeIcon className="h-6 w-6 text-primary" />,
+          title: 'Order',
+          subtitle: '',
+        };
+    }
+  };
+
   return (
-    <section className="min-h-screen bg-gray-50 py-8 lg:py-12">
-      <div className="mx-auto max-w-6xl px-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">My Orders</h1>
 
-          <p className="mt-2 text-sm font-medium text-gray-500">
-            View your purchases, auction wins, and bid pack orders.
+          <p className="mt-2 text-gray-500">
+            View all bid purchases, auction wins and direct product purchases.
           </p>
         </div>
 
-        <div className="mt-8 space-y-4">
-          {orders.map(order => (
-            <div
-              key={order._id}
-              className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs"
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                    {getOrderIcon(order.orderType)}
-                  </div>
+        <div className="mb-6 flex flex-col lg:flex-row justify-between items-center">
+          <Select
+            value={orderPaymentStatusFilter}
+            onChange={value => setOrderPaymentStatusFilter(value as OrderPaymentStatusEnum)}
+            options={[{ label: 'All', value: 'all' }, ...orderPaymentStatusOptions]}
+            containerClassName="w-[90vw] lg:w-3xs"
+          />
 
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-gray-900">{getOrderTitle(order)}</span>
-
-                      {getStatusBadge(order.paymentStatus)}
-                    </div>
-
-                    <span className="mt-1 block text-xs text-gray-500">
-                      Order ID: {order.orderId}
-                    </span>
-
-                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
-                      <CalendarDaysIcon className="h-4 w-4" />
-
-                      {new Date(order.createdAt).toLocaleString('en-IN')}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-start gap-3 lg:items-end">
-                  <span className="text-2xl font-bold text-gray-900">
-                    ₹{order.amount.toLocaleString('en-IN')}
-                  </span>
-
-                  {order.orderType === 'auction' && (
-                    <Link href={`/auctions/${order.auction?.auctionId}`}>
-                      <Button variant="secondary">View Auction</Button>
-                    </Link>
-                  )}
-
-                  {order.orderType === 'product' && (
-                    <Link href={`/products/${order.product?.productId}`}>
-                      <Button variant="secondary">View Product</Button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-
-              <Divider className="my-4" />
-
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-                <div>
-                  <span className="text-xs text-gray-500">Order Type</span>
-
-                  <p className="font-medium capitalize">{order.orderType.replace('_', ' ')}</p>
-                </div>
-
-                <div>
-                  <span className="text-xs text-gray-500">Payment Status</span>
-
-                  <p className="font-medium capitalize">{order.paymentStatus}</p>
-                </div>
-
-                <div>
-                  <span className="text-xs text-gray-500">Amount Paid</span>
-
-                  <p className="font-medium">₹{order.amount.toLocaleString('en-IN')}</p>
-                </div>
-
-                <div>
-                  <span className="text-xs text-gray-500">Order Number</span>
-
-                  <p className="font-medium">{order.orderId}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <TextInput
+            containerClassName="mt-4 w-[90vw] lg:mt-0 lg:w-auto"
+            placeholder="Search Order ID"
+            startIcon={<MagnifyingGlassIcon className="h-4 w-4" />}
+            value={searchFilter}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchFilter(e.target.value)}
+          />
         </div>
+        {!orders?.length ? (
+          <div className="rounded-3xl border-2 border-dashed border-gray-300 bg-white p-16 text-center">
+            <CubeIcon className="mx-auto h-14 w-14 text-gray-400" />
+
+            <h2 className="mt-4 text-xl font-semibold">No Orders Found</h2>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {orders.map(order => {
+              const details = getOrderTypeDetails(order);
+
+              return (
+                <div
+                  key={order._id}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                >
+                  <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                        {details.icon}
+                      </div>
+
+                      <div>
+                        <div className="flex flex-wrap items-center gap-4">
+                          <h2 className="text-lg font-semibold">{details.title}</h2>
+
+                          <Badge
+                            className="capitalize"
+                            text={order.orderType.replaceAll('_', ' ')}
+                          />
+                        </div>
+
+                        <p className="mt-1 text-sm text-gray-500">{details.subtitle}</p>
+
+                        <p className="mt-2 text-xs text-gray-400 font-semibold">
+                          Order ID: {order.orderId}
+                        </p>
+                      </div>
+                    </div>
+                    {getStatusBadge(order.paymentStatus)}
+                  </div>
+
+                  <Divider className="my-5" />
+
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    <div>
+                      <span className="text-xs font-semibold uppercase text-gray-400">
+                        Order Amount
+                      </span>
+
+                      <p className="mt-1 text-xl font-bold">{formatAmount(order.amount)}</p>
+                      {(order.orderType === OrderTypeEnum.Auction ||
+                        order.orderType === OrderTypeEnum.Product) && (
+                        <p className="text-sm font-semibold">{` (${formatAmount(order.amount / 100, false)} Bids)`}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <span className="text-xs font-semibold uppercase text-gray-400">
+                        Order Type
+                      </span>
+
+                      <p className="mt-1 font-semibold capitalize">
+                        {order.orderType.replaceAll('_', ' ')}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span className="text-xs font-semibold uppercase text-gray-400">
+                        Payment Status
+                      </span>
+
+                      <p className="mt-1 font-semibold capitalize">{order.paymentStatus}</p>
+                    </div>
+
+                    <div>
+                      <span className="text-xs font-semibold uppercase text-gray-400">
+                        Placed On
+                      </span>
+
+                      <p className="mt-1 font-semibold">
+                        {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default MyOrders;

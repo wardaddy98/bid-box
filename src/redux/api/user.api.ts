@@ -1,5 +1,5 @@
 import { ApiResponse } from '@/types/common.type';
-import { OrderTypeEnum } from '@/types/order.type';
+import { IOrder, OrderPaymentStatusEnum, OrderTypeEnum } from '@/types/order.type';
 import { IRazorPaySuccessResponse } from '@/types/razorPay';
 import { IUser, UserRole } from '@/types/user.type';
 import { rootApi } from '../rootApi';
@@ -143,6 +143,15 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+    getAllOrders: build.query<
+      ApiResponse<{ data: IOrder[] }>,
+      { paymentStatus: OrderPaymentStatusEnum | 'all'; search: string }
+    >({
+      query: query => ({
+        url: `/order?paymentStatus=${query.paymentStatus}&search=${query.search}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -157,4 +166,5 @@ export const {
   useVerifyPaymentMutation,
   useUpdateFailedPaymentMutation,
   useCreateDirectPurchaseOrderMutation,
+  useLazyGetAllOrdersQuery,
 } = userApi;
