@@ -60,6 +60,7 @@ const CustomerView = () => {
 
   return (
     <>
+      <h1>test</h1>
       <Hero />
       <div className="my-6 mx-4 lg:mx-32">
         <div className="flex items-center gap-2">
