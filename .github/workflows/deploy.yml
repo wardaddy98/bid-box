@@ -18,5 +18,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             source ~/.bashrc
-            which pm2
+            bash /home/ubuntu/deploy/restart-frontend.sh
 
