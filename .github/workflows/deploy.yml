@@ -17,6 +17,4 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            source ~/.bashrc
-            bash /home/ubuntu/deploy/restart-frontend.sh
-
+            /home/ubuntu/deploy/restart-frontend.sh
