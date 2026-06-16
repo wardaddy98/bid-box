@@ -11,7 +11,6 @@ import ProductDescription from '@/components/ProductDescription';
 import Rating from '@/components/Rating';
 import RecentBids from '@/components/RecentBids';
 import Review from '@/components/Review';
-import Tray from '@/components/Tray';
 import { useGetSingleAuctionQuery } from '@/redux/api/auctions.api';
 import { useAddBookmarkMutation, useRemoveBookmarkMutation } from '@/redux/api/user.api';
 import { getCurrentAuction } from '@/redux/slices/auction.slice';
@@ -188,8 +187,6 @@ const Bid = () => {
           <PlatformDetails />
         </div>
       </div>
-      <Tray heading="Recently Viewed Auctions" />
-      <Tray heading="Related Auctions" />
     </>
   );
 };

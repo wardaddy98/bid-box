@@ -104,6 +104,18 @@ export const auctionApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+    getUpcomingAuctions: build.query<ApiResponse<{ data: IPopulatedAuction[] }>, unknown>({
+      query: () => ({
+        url: '/auction/upcoming',
+        method: 'GET',
+      }),
+    }),
+    getCancelledAuctions: build.query<ApiResponse<{ data: IPopulatedAuction[] }>, unknown>({
+      query: () => ({
+        url: '/auction/cancelled',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -115,4 +127,6 @@ export const {
   usePlaceBidMutation,
   useGetBidPacksQuery,
   useGetWinnersQuery,
+  useGetUpcomingAuctionsQuery,
+  useGetCancelledAuctionsQuery,
 } = auctionApi;

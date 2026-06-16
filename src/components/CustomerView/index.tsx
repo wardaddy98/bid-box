@@ -13,11 +13,13 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FireAnimationJSON from '../../../public/assets/fire_animation.json';
+import CancelledAuctions from '../CancelledAuctions';
 import Divider from '../Divider';
 import EmptyValuePlaceholder from '../EmptyValuePlaceholder';
 import LiveAuctionCard from '../LiveAuctionCard';
 import Pagination from '../Pagination';
 import Select from '../Select';
+import UpcomingAuctions from '../UpcomingAuctions';
 
 const CustomerView = () => {
   const dispatch = useDispatch();
@@ -60,7 +62,6 @@ const CustomerView = () => {
 
   return (
     <>
-      <h1>test 8</h1>
       <Hero />
       <div className="my-6 mx-4 lg:mx-32">
         <div className="flex items-center gap-2">
@@ -91,7 +92,7 @@ const CustomerView = () => {
             ))}
           </div>
         ) : (
-          <EmptyValuePlaceholder />
+          <EmptyValuePlaceholder text="No Live auctions..." />
         )}
 
         <Divider className="mt-12 mb-4" />
@@ -104,6 +105,8 @@ const CustomerView = () => {
           />
         </div>
       </div>
+      <UpcomingAuctions />
+      <CancelledAuctions />
     </>
   );
 };
