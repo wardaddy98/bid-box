@@ -1,5 +1,6 @@
 import { IBid } from './bid.type';
 import { IProduct } from './product.type';
+import { IPopulatedReview } from './review.type';
 import { IUser } from './user.type';
 
 export enum AuctionStatusEnum {
@@ -27,6 +28,10 @@ export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> 
   liveOn: string;
 }
 
+export interface IPopulatedAuctionWithReviews extends Omit<IAuction, 'product' | 'liveOn'> {
+  product: IProduct & { reviews: IPopulatedReview[] };
+  liveOn: string;
+}
 export interface IBidWithUser extends Omit<IBid, 'user'> {
   user: {
     readonly _id: string;
@@ -37,7 +42,7 @@ export interface IBidWithUser extends Omit<IBid, 'user'> {
   };
 }
 
-export interface ICurrentAuction extends IPopulatedAuction {
+export interface ICurrentAuction extends IPopulatedAuctionWithReviews {
   bids: IBidWithUser[];
 }
 

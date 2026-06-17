@@ -18,7 +18,6 @@ export interface IReview {
   title: string;
 }
 
-export interface IPopulatedReview extends Omit<IReview, 'user' | 'product'> {
+export interface IPopulatedReview extends Omit<IReview, 'user'> {
   user: IUser;
-  product: IProduct;
 }

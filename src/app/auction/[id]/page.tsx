@@ -5,6 +5,7 @@ import AuctionDetails from '@/components/AuctionDetails';
 import Badge from '@/components/Badge';
 import Button from '@/components/Button';
 import Carousel from '@/components/Carousel';
+import EmptyValuePlaceholder from '@/components/EmptyValuePlaceholder';
 import IconButton from '@/components/IconButton';
 import PlatformDetails from '@/components/PlatformDetails';
 import ProductDescription from '@/components/ProductDescription';
@@ -19,7 +20,7 @@ import socket, { AuctionSocketEvents } from '@/socket/socket';
 import { BookmarkIcon as BookmarkIconOutline, CubeIcon } from '@heroicons/react/24/outline';
 import { BookmarkIcon as BookmarkIconSolid } from '@heroicons/react/24/solid';
 import { useParams } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Bid = () => {
@@ -36,6 +37,8 @@ const Bid = () => {
   );
   const [triggerAddBookmark, { isLoading: addBookmarkLoading }] = useAddBookmarkMutation();
   const [triggerRemoveBookmark, { isLoading: removeBookmarkLoading }] = useRemoveBookmarkMutation();
+
+  const [viewMoreReviews, setViewMoreReviews] = useState(false);
 
   const user = useSelector(getUser);
 
@@ -72,6 +75,45 @@ const Bid = () => {
   const handleRemoveBookmark = async () => {
     await triggerRemoveBookmark({ auctionId: currentAuction?.auctionId ?? '' });
   };
+
+  const compoundReviewDetails = useMemo(() => {
+    const reviewsLength = currentAuction?.product?.reviews?.length ?? 0;
+    const total = currentAuction?.product?.reviews.reduce(
+      (acc, current) => {
+        acc = {
+          totalRating: acc.totalRating + Number(current?.overallRating ?? 0),
+          asDescribed: acc.asDescribed + Number(current?.details?.asDescribed ?? 0),
+          packaging: acc.packaging + Number(current?.details?.packaging ?? 0),
+          productQuality: acc.productQuality + Number(current?.details?.productQuality ?? 0),
+          shipping: acc.shipping + Number(current?.details?.shipping ?? 0),
+        };
+        return acc;
+      },
+      {
+        totalRating: 0,
+        shipping: 0,
+        productQuality: 0,
+        packaging: 0,
+        asDescribed: 0,
+      },
+    );
+
+    return {
+      totalRating: Number(((total?.totalRating ?? 0) / reviewsLength).toFixed(1)),
+      shipping: ((total?.shipping ?? 0) / (5 * reviewsLength)) * 100,
+      productQuality: ((total?.productQuality ?? 0) / (5 * reviewsLength)) * 100,
+      packaging: ((total?.packaging ?? 0) / (5 * reviewsLength)) * 100,
+      asDescribed: ((total?.asDescribed ?? 0) / (5 * reviewsLength)) * 100,
+    };
+  }, [currentAuction?.product?.reviews]);
+
+  const reviews = useMemo(() => {
+    if (!currentAuction?.product?.reviews?.length) return [];
+
+    return viewMoreReviews
+      ? currentAuction?.product?.reviews
+      : currentAuction?.product?.reviews.slice(0, 5);
+  }, [viewMoreReviews, currentAuction?.product?.reviews]);
 
   return (
     <>
@@ -125,11 +167,11 @@ const Bid = () => {
                 <h1 className="font-semibold text-xl lg:text-2xl">Ratings & Reviews</h1>
                 <div className="mt-2 flex items-center justify-start gap-6">
                   <div className="border-r-2 border-gray-200 pr-2">
-                    <h1 className="text-2xl font-semibold">5.0</h1>
+                    <h1 className="text-2xl font-semibold">{compoundReviewDetails.totalRating}</h1>
                   </div>
                   <div className="flex flex-col gap-1 items-start">
-                    <Rating score={4.57676} />
-                    <h1 className="text-sm text-gray-400 font-semibold">(1 review)</h1>
+                    <Rating score={compoundReviewDetails.totalRating} />
+                    <h1 className="text-sm text-gray-400 font-semibold">{`(${currentAuction?.product?.reviews?.length} reviews)`}</h1>
                   </div>
                 </div>
               </div>
@@ -140,7 +182,9 @@ const Bid = () => {
                     Shipping
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                    <div
+                      className={`h-2.5 w-[${compoundReviewDetails.shipping}%] rounded-full bg-yellow-400`}
+                    ></div>
                   </div>
                 </div>
                 <div className="flex items-center mt-2">
@@ -148,7 +192,9 @@ const Bid = () => {
                     Product Quality
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                    <div
+                      className={`h-2.5 w-[${compoundReviewDetails.productQuality}%] rounded-full bg-yellow-400`}
+                    ></div>
                   </div>
                 </div>
                 <div className="flex items-center mt-2">
@@ -156,7 +202,9 @@ const Bid = () => {
                     Packaging
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                    <div
+                      className={`h-2.5 w-[${compoundReviewDetails.packaging}%] rounded-full bg-yellow-400`}
+                    ></div>
                   </div>
                 </div>
                 <div className="flex items-center mt-2">
@@ -164,20 +212,36 @@ const Bid = () => {
                     As Described
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
-                    <div className="h-2.5 w-[70%] rounded-full bg-yellow-400"></div>
+                    <div
+                      className={`h-2.5 w-[${compoundReviewDetails.asDescribed}%] rounded-full bg-yellow-400`}
+                    ></div>
                   </div>
                 </div>
               </div>
             </div>
+            {reviews?.length > 0 ? (
+              <div className="flex flex-col gap-4 mt-6">
+                {reviews.map((review, idx) => (
+                  <Review key={idx} review={review} />
+                ))}
+              </div>
+            ) : (
+              <EmptyValuePlaceholder text="No reviews yet..." />
+            )}
 
-            <div className="flex flex-col gap-4 mt-6">
-              {[...Array(5)].map((_, idx) => (
-                <Review key={idx} />
-              ))}
-            </div>
-            <div className="flex items-center justify-center mt-4">
-              <Button variant="text">Load More</Button>
-            </div>
+            {currentAuction?.product?.reviews && currentAuction?.product?.reviews?.length > 5 && (
+              <div className="flex items-center justify-center mt-4">
+                {viewMoreReviews ? (
+                  <Button variant="text" onClick={() => setViewMoreReviews(false)}>
+                    View Less
+                  </Button>
+                ) : (
+                  <Button variant="text" onClick={() => setViewMoreReviews(true)}>
+                    View More
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="hidden lg:block w-full lg:w-lg p-3 lg:p-0">
