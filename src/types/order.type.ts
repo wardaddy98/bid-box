@@ -1,5 +1,5 @@
 import { IBidPack, IPopulatedAuction } from './auction.type';
-import { IProduct } from './product.type';
+import { IProductWithReview } from './product.type';
 import { IUser } from './user.type';
 
 export enum OrderTypeEnum {
@@ -21,7 +21,7 @@ export interface IOrder {
   amount: number;
   razorPayOrderId?: string;
   razorPayMetaData?: unknown;
-  product?: IProduct;
+  product?: IProductWithReview;
   auction?: IPopulatedAuction;
   bidPack?: IBidPack;
   orderType: OrderTypeEnum;

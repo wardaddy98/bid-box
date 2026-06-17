@@ -1,14 +1,18 @@
 'use client';
 
 import Badge from '@/components/Badge';
+import Button from '@/components/Button';
 import Divider from '@/components/Divider';
+import ProductReviewForm, { IReviewFormValues } from '@/components/ProductReviewForm';
 import Select from '@/components/Select';
 import TextInput from '@/components/TextInput';
 import useDebounce from '@/hooks/useDebounce';
 import useIsAdmin from '@/hooks/useIsAdmin';
+import { useCreateProductReviewMutation } from '@/redux/api/product.api';
 import { useLazyGetAllOrdersQuery } from '@/redux/api/user.api';
 import { setIsLoading } from '@/redux/slices/auth.slice';
 import { IOrder, OrderPaymentStatusEnum, OrderTypeEnum } from '@/types/order.type';
+import { IReview } from '@/types/review.type';
 import { formatAmount, generateSelectOptionsFromEnum } from '@/utils/commonUtils';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
@@ -19,6 +23,8 @@ import {
   TrophyIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
+import _ from 'lodash';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -28,6 +34,8 @@ const MyOrders = () => {
   const router = useRouter();
 
   const [triggerGetAllOrders, { isFetching, data }] = useLazyGetAllOrdersQuery();
+  const [triggerCreateProductReview, { isLoading, data: createReviewResponse }] =
+    useCreateProductReviewMutation();
 
   const dispatch = useDispatch();
 
@@ -35,6 +43,7 @@ const MyOrders = () => {
     OrderPaymentStatusEnum | 'all'
   >('all');
   const [searchFilter, setSearchFilter] = useState<string>('');
+  const [expandedReviewOrderId, setExpandedReviewOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!dispatch) return;
@@ -64,8 +73,20 @@ const MyOrders = () => {
   const orderPaymentStatusOptions = generateSelectOptionsFromEnum(OrderPaymentStatusEnum);
 
   const orders = useMemo(() => {
-    return data?.body?.data ?? [];
-  }, [data]);
+    let orders = data?.body?.data ?? [];
+
+    const createdReview: IReview | null = createReviewResponse?.body?.data ?? null;
+
+    if (!_.isEmpty(createdReview)) {
+      orders = orders.map(e =>
+        e.product?._id === createdReview.product
+          ? { ...e, product: { ...e.product, review: createdReview } }
+          : e,
+      );
+    }
+
+    return orders;
+  }, [data, createReviewResponse]);
 
   const getStatusBadge = (status: OrderPaymentStatusEnum) => {
     switch (status) {
@@ -96,6 +117,9 @@ const MyOrders = () => {
   };
 
   const getOrderTypeDetails = (order: IOrder) => {
+    let imageSrc =
+      order?.product?.productImages?.[0]?.signedUrl ?? '/assets/product-placeholder.png';
+
     switch (order.orderType) {
       case OrderTypeEnum['Bids Pack']:
         return {
@@ -106,7 +130,16 @@ const MyOrders = () => {
 
       case OrderTypeEnum.Product:
         return {
-          icon: <CubeIcon className="h-6 w-6 text-primary" />,
+          icon: (
+            <Image
+              alt="product"
+              onError={() => (imageSrc = '/assets/product-placeholder.png')}
+              src={imageSrc}
+              unoptimized
+              width={100}
+              height={100}
+            />
+          ),
           title: order.product?.title ?? 'Product Purchase',
           subtitle: `Direct Product Purchase`,
         };
@@ -124,6 +157,17 @@ const MyOrders = () => {
           title: 'Order',
           subtitle: '',
         };
+    }
+  };
+
+  const submitReview = async (formValues: IReviewFormValues, productId: string) => {
+    const response = await triggerCreateProductReview({
+      ...formValues,
+      productId,
+    });
+
+    if (response?.data?.status === 200) {
+      setExpandedReviewOrderId(null);
     }
   };
 
@@ -164,6 +208,7 @@ const MyOrders = () => {
           <div className="space-y-5">
             {orders.map(order => {
               const details = getOrderTypeDetails(order);
+              const review = order?.product?.review ?? null;
 
               return (
                 <div
@@ -243,6 +288,29 @@ const MyOrders = () => {
                       </p>
                     </div>
                   </div>
+
+                  {order.orderType === OrderTypeEnum.Product &&
+                    order.paymentStatus === OrderPaymentStatusEnum.Success &&
+                    !expandedReviewOrderId && (
+                      <div className="flex justify-end mt-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => setExpandedReviewOrderId(order._id)}
+                        >
+                          {review ? 'View Review' : 'Write Review'}
+                        </Button>
+                      </div>
+                    )}
+
+                  {expandedReviewOrderId === order._id && order.product && (
+                    <ProductReviewForm
+                      productId={order.product.productId}
+                      onSubmit={submitReview}
+                      handleClose={() => setExpandedReviewOrderId(null)}
+                      isLoading={isLoading}
+                      existingReview={review}
+                    />
+                  )}
                 </div>
               );
             })}
