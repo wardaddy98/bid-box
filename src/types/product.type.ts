@@ -1,3 +1,5 @@
+import { IReview } from './review.type';
+
 export enum ProductCategoryEnum {
   Electronics = 'electronics',
   Fashion = 'fashion',
@@ -38,4 +40,8 @@ export interface IProduct {
   availableStock: number;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface IProductWithReview extends IProduct {
+  review?: IReview;
 }

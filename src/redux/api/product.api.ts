@@ -1,4 +1,6 @@
+import { IReviewFormValues } from '@/components/ProductReviewForm';
 import { IProduct, IProductWithoutProductImage, ProductCategoryEnum } from '@/types/product.type';
+import { IReview } from '@/types/review.type';
 import { rootApi } from '../rootApi';
 import { ApiResponse, PaginatedApiResponse } from './../../types/common.type';
 
@@ -59,6 +61,17 @@ export const productApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
     }),
+
+    createProductReview: build.mutation<
+      ApiResponse<{ data: IReview }>,
+      IReviewFormValues & { productId: string }
+    >({
+      query: payload => ({
+        url: '/product/review',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
   }),
 });
 
@@ -68,4 +81,5 @@ export const {
   useLazyGetAllProductsQuery,
   useGetAllProductsUnPaginatedQuery,
   useEditProductMutation,
+  useCreateProductReviewMutation,
 } = productApi;
