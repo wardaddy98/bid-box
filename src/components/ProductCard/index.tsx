@@ -39,7 +39,7 @@ const ProductCard = ({ auction }: Props) => {
 
       <div className="flex flex-col p-2 ">
         <div className="flex-1">
-          <p className="line-clamp-2 text-base font-semibold text-gray-900">
+          <p className="line-clamp-1 text-base font-semibold text-gray-900">
             {auction.product.title}
           </p>
 

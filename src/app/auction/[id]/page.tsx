@@ -23,7 +23,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-const Bid = () => {
+const CurrentAuctionPage = () => {
   const { id } = useParams();
 
   const { isFetching } = useGetSingleAuctionQuery(
@@ -99,11 +99,11 @@ const Bid = () => {
     );
 
     return {
-      totalRating: Number(((total?.totalRating ?? 0) / reviewsLength).toFixed(1)),
-      shipping: ((total?.shipping ?? 0) / (5 * reviewsLength)) * 100,
-      productQuality: ((total?.productQuality ?? 0) / (5 * reviewsLength)) * 100,
-      packaging: ((total?.packaging ?? 0) / (5 * reviewsLength)) * 100,
-      asDescribed: ((total?.asDescribed ?? 0) / (5 * reviewsLength)) * 100,
+      totalRating: Number(((total?.totalRating ?? 0) / reviewsLength).toFixed(1)) || 0,
+      shipping: ((total?.shipping ?? 0) / (5 * reviewsLength)) * 100 || 0,
+      productQuality: ((total?.productQuality ?? 0) / (5 * reviewsLength)) * 100 || 0,
+      packaging: ((total?.packaging ?? 0) / (5 * reviewsLength)) * 100 || 0,
+      asDescribed: ((total?.asDescribed ?? 0) / (5 * reviewsLength)) * 100 || 0,
     };
   }, [currentAuction?.product?.reviews]);
 
@@ -183,7 +183,7 @@ const Bid = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 w-[${compoundReviewDetails.shipping}%] rounded-full bg-yellow-400`}
+                      className={`h-2.5 ${compoundReviewDetails?.shipping ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ const Bid = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 w-[${compoundReviewDetails.productQuality}%] rounded-full bg-yellow-400`}
+                      className={`h-2.5 ${compoundReviewDetails?.productQuality ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ const Bid = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 w-[${compoundReviewDetails.packaging}%] rounded-full bg-yellow-400`}
+                      className={`h-2.5 ${compoundReviewDetails?.packaging ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ const Bid = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 w-[${compoundReviewDetails.asDescribed}%] rounded-full bg-yellow-400`}
+                      className={`h-2.5 ${compoundReviewDetails?.asDescribed ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -254,4 +254,4 @@ const Bid = () => {
     </>
   );
 };
-export default Bid;
+export default CurrentAuctionPage;
