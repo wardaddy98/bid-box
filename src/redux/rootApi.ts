@@ -11,7 +11,7 @@ import {
 import { toast } from 'react-toastify';
 
 const getBaseQuery = fetchBaseQuery({
-  baseUrl: constants.API_URL,
+  baseUrl: constants.NEXT_PUBLIC_API_URL,
   //to include cookies in every request, this is essential for refresh token flow
   credentials: 'include',
   prepareHeaders(headers, api) {

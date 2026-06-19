@@ -10,7 +10,7 @@ export enum AuctionSocketEvents {
   BID_PLACED = 'bid-placed',
 }
 
-const socket = io(constants.API_URL, {
+const socket = io(constants.NEXT_PUBLIC_SOCKET_URL, {
   autoConnect: false,
   transports: ['websocket'],
 });
