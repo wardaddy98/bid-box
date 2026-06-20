@@ -60,6 +60,9 @@ const auctionSlice = createSlice({
       if (state.currentAuction && liveAuctionsSet.has(state.currentAuction._id)) {
         state.currentAuction.status = AuctionStatusEnum.Live;
       }
+      if (state.upcomingAuctions?.length) {
+        state.upcomingAuctions = state.upcomingAuctions.filter(e => !liveAuctionsSet.has(e._id));
+      }
     },
 
     setUpdatedExpiredAuctions: (

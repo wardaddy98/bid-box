@@ -47,21 +47,6 @@ const AuctionCard = (props: Props) => {
     return currentAuction?.bids?.[0];
   }, [currentAuction?.bids]);
 
-  const placeBid = async (amount: number) => {
-    const payload: IPlaceBidPayload = { amount, auctionId: currentAuction?.auctionId as string };
-    const isValidated = validateUserInput(payload, placeBidSchema);
-    if (!isValidated) return;
-    return await triggerPlaceBid(payload);
-  };
-
-  const handleCustomBid = async () => {
-    const res = await placeBid(customBidAmount);
-    if (res?.data?.status === 200) {
-      setCustomBidAmount(0);
-      setCustomBidState(false);
-    }
-  };
-
   useEffect(() => {
     if (!currentAuction?.expiresAt) return;
 
@@ -83,6 +68,27 @@ const AuctionCard = (props: Props) => {
       if (interval) clearInterval(interval);
     };
   }, [currentAuction?.expiresAt]);
+
+  useEffect(() => {
+    return () => {
+      setTimer(60);
+    };
+  }, []);
+
+  const placeBid = async (amount: number) => {
+    const payload: IPlaceBidPayload = { amount, auctionId: currentAuction?.auctionId as string };
+    const isValidated = validateUserInput(payload, placeBidSchema);
+    if (!isValidated) return;
+    return await triggerPlaceBid(payload);
+  };
+
+  const handleCustomBid = async () => {
+    const res = await placeBid(customBidAmount);
+    if (res?.data?.status === 200) {
+      setCustomBidAmount(0);
+      setCustomBidState(false);
+    }
+  };
 
   const bidsUsedByUser =
     currentAuction?.status === AuctionStatusEnum.Live

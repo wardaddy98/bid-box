@@ -108,9 +108,21 @@ const CustomerView = () => {
           />
         </div>
       </div>
-      <Tray heading="Upcoming Auctions" auctions={upcomingAuctions ?? []} />
-      <Tray heading="Completed Auctions" auctions={completedAuctions ?? []} />
-      <Tray heading="Cancelled Auctions" auctions={cancelledAuctions ?? []} />
+      <Tray
+        heading="Upcoming Auctions"
+        auctions={upcomingAuctions ?? []}
+        tooltip="Auctions that have yet to become live."
+      />
+      <Tray
+        heading="Completed Auctions"
+        auctions={completedAuctions ?? []}
+        tooltip="Auctions that have been successfully won by a bidder."
+      />
+      <Tray
+        heading="Cancelled Auctions"
+        auctions={cancelledAuctions ?? []}
+        tooltip="Auctions that have been cancelled due to no activity for 10 minutes."
+      />
     </>
   );
 };
