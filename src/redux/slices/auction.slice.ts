@@ -18,12 +18,18 @@ export const AUCTION_SLICE_KEY = 'auction';
 
 interface IAuctionsSlice {
   auctions: IPopulatedAuction[];
+  completedAuctions: IPopulatedAuction[];
+  cancelledAuctions: IPopulatedAuction[];
+  upcomingAuctions: IPopulatedAuction[];
   pagination: IPagination;
   currentAuction: ICurrentAuction | null;
 }
 
 const initialState: IAuctionsSlice = {
   auctions: [],
+  completedAuctions: [],
+  cancelledAuctions: [],
+  upcomingAuctions: [],
   pagination: {
     currentPage: 1,
     totalCount: 0,
@@ -143,6 +149,15 @@ const auctionSlice = createSlice({
         if (state.currentAuction) {
           state.currentAuction.product.availableStock = payload.body?.data?.availableStock ?? 0;
         }
+      },
+    );
+
+    builder.addMatcher(
+      auctionApi.endpoints.getAuctionsHome.matchFulfilled,
+      (state, { payload }) => {
+        state.cancelledAuctions = payload?.body?.data?.cancelledAuctions ?? [];
+        state.completedAuctions = payload?.body?.data?.completedAuctions ?? [];
+        state.upcomingAuctions = payload?.body?.data?.upcomingAuctions ?? [];
       },
     );
   },

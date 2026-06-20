@@ -43,6 +43,14 @@ export type IPlaceBidResponse = ApiResponse<{ data: IBidWithUser }>;
 export type IGetBidPacksResponse = ApiResponse<{ data: IBidPack[] }>;
 export type IGetWinnersResponse = ApiResponse<{ data: IPopulatedAuctionWithBidsAndWinningBid[] }>;
 
+export type IGetAuctionsHomeResponse = ApiResponse<{
+  data: {
+    completedAuctions: IPopulatedAuction[];
+    cancelledAuctions: IPopulatedAuction[];
+    upcomingAuctions: IPopulatedAuction[];
+  };
+}>;
+
 export const auctionApi = rootApi.injectEndpoints({
   endpoints: build => ({
     getAllAuctions: build.query<IGetAllAuctionsResponse, IGetAllAuctionsQueryString>({
@@ -104,15 +112,9 @@ export const auctionApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
     }),
-    getUpcomingAuctions: build.query<ApiResponse<{ data: IPopulatedAuction[] }>, unknown>({
+    getAuctionsHome: build.query<IGetAuctionsHomeResponse, unknown>({
       query: () => ({
-        url: '/auction/upcoming',
-        method: 'GET',
-      }),
-    }),
-    getCancelledAuctions: build.query<ApiResponse<{ data: IPopulatedAuction[] }>, unknown>({
-      query: () => ({
-        url: '/auction/cancelled',
+        url: '/auction/home',
         method: 'GET',
       }),
     }),
@@ -127,6 +129,5 @@ export const {
   usePlaceBidMutation,
   useGetBidPacksQuery,
   useGetWinnersQuery,
-  useGetUpcomingAuctionsQuery,
-  useGetCancelledAuctionsQuery,
+  useGetAuctionsHomeQuery,
 } = auctionApi;
