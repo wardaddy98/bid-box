@@ -17,7 +17,7 @@ const ProductCardAdmin = ({ product, handleEdit }: Props) => {
           src={product?.productImages?.[0]?.signedUrl ?? ''}
           alt="product"
           fill
-          className="object-fill"
+          className="object-contain"
           unoptimized
         />
         <IconButton onClick={handleEdit} name="edit" rounded className="absolute top-2 right-2">
@@ -25,7 +25,7 @@ const ProductCardAdmin = ({ product, handleEdit }: Props) => {
         </IconButton>
       </div>
       <div className="py-2 px-3">
-        <span className="block text-lg font-semibold">{product.title}</span>
+        <p className=" text-lg font-semibold line-clamp-2">{product.title}</p>
         <span className="block text-sm font-semibold text-gray-500">{product?.productId}</span>
         <div className="flex items-center justify-between">
           <span className="block text-2xl text-green-600 font-semibold">
