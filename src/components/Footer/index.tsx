@@ -4,7 +4,6 @@ import useIsAdmin from '@/hooks/useIsAdmin';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IconButton from '../IconButton';
-import NavButton from '../NavButton';
 
 const Footer = () => {
   const { isAdmin } = useIsAdmin();
@@ -45,117 +44,8 @@ const Footer = () => {
           </ul>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 border-t border-gray-200 pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:pt-16">
-          <div>
-            <p className="text-gray-500 font-medium">Services</p>
-
-            <ul className="mt-6 space-y-4 text-sm">
-              <li>
-                <NavButton href="#" variant="text">
-                  1on1 Coaching
-                </NavButton>
-              </li>
-
-              <li>
-                <NavButton href="#" variant="text">
-                  COmpany Review
-                </NavButton>
-              </li>
-
-              <li>
-                <NavButton href="#" variant="text">
-                  Account Review
-                </NavButton>
-              </li>
-
-              <li>
-                <NavButton href="#" variant="text">
-                  HR Consulting
-                </NavButton>
-              </li>
-
-              <li>
-                <NavButton href="#" variant="text">
-                  SEO Optimization
-                </NavButton>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-gray-500 font-medium">Company</p>
-
-            <ul className="mt-6 space-y-4 text-sm">
-              <li>
-                <NavButton href="#" variant="text">
-                  About
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Meet the Team
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Accounts Review
-                </NavButton>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-gray-500 font-medium">Helpful Links</p>
-
-            <ul className="mt-6 space-y-4 text-sm">
-              <li>
-                <NavButton href="#" variant="text">
-                  Contact
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  FAQs
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Live Chat
-                </NavButton>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-gray-500 font-medium">Legal</p>
-
-            <ul className="mt-6 space-y-4 text-sm">
-              <li>
-                <NavButton href="#" variant="text">
-                  Accessibility
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Returns Policy
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Accessibility Refund Policy
-                </NavButton>
-              </li>
-              <li>
-                <NavButton href="#" variant="text">
-                  Hiring-3 Statistics
-                </NavButton>
-              </li>
-            </ul>
-          </div>
-        </div>
-
         <p className="text-sm font-semibold text-gray-500 ">
-          © 2022. Bid Box. All rights reserved.
+          © 2026. Bid Box. All rights reserved.
         </p>
       </div>
     </footer>
