@@ -3,7 +3,7 @@ import Hero from '@/components/Hero';
 import LottieAnimation from '@/components/LottieAnimation';
 import TextInput from '@/components/TextInput';
 import useDebounce from '@/hooks/useDebounce';
-import { useLazyGetAllAuctionsQuery } from '@/redux/api/auctions.api';
+import { useGetAuctionsHomeQuery, useLazyGetAllAuctionsQuery } from '@/redux/api/auctions.api';
 import { getAuctionSlice, setCurrentPageAuction } from '@/redux/slices/auction.slice';
 import { setIsLoading } from '@/redux/slices/auth.slice';
 import { AuctionStatusEnum } from '@/types/auction.type';
@@ -13,20 +13,23 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FireAnimationJSON from '../../../public/assets/fire_animation.json';
-import CancelledAuctions from '../CancelledAuctions';
 import Divider from '../Divider';
 import EmptyValuePlaceholder from '../EmptyValuePlaceholder';
 import LiveAuctionCard from '../LiveAuctionCard';
 import Pagination from '../Pagination';
 import Select from '../Select';
-import UpcomingAuctions from '../UpcomingAuctions';
+import Tray from '../Tray';
 
 const CustomerView = () => {
   const dispatch = useDispatch();
 
   const [triggerGetAllAuctions, { isFetching }] = useLazyGetAllAuctionsQuery();
+  const { isFetching: auctionsHomeFetching } = useGetAuctionsHomeQuery({});
   const {
     auctions,
+    cancelledAuctions,
+    completedAuctions,
+    upcomingAuctions,
     pagination: { currentPage, totalPages },
   } = useSelector(getAuctionSlice);
 
@@ -48,11 +51,11 @@ const CustomerView = () => {
 
   useEffect(() => {
     if (!dispatch) return;
-    dispatch(setIsLoading(isFetching));
+    dispatch(setIsLoading(isFetching || auctionsHomeFetching));
     return () => {
       dispatch(setIsLoading(false));
     };
-  }, [dispatch, isFetching]);
+  }, [dispatch, isFetching, auctionsHomeFetching]);
 
   const categoryOptions = generateSelectOptionsFromEnum(ProductCategoryEnum);
 
@@ -105,8 +108,21 @@ const CustomerView = () => {
           />
         </div>
       </div>
-      <UpcomingAuctions />
-      <CancelledAuctions />
+      <Tray
+        heading="Upcoming Auctions"
+        auctions={upcomingAuctions ?? []}
+        tooltip="Auctions that have yet to become live."
+      />
+      <Tray
+        heading="Completed Auctions"
+        auctions={completedAuctions ?? []}
+        tooltip="Auctions that have been successfully won by a bidder."
+      />
+      <Tray
+        heading="Cancelled Auctions"
+        auctions={cancelledAuctions ?? []}
+        tooltip="Auctions that have been cancelled due to no activity for 10 minutes."
+      />
     </>
   );
 };

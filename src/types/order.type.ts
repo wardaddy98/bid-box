@@ -1,4 +1,4 @@
-import { IBidPack, IPopulatedAuction } from './auction.type';
+import { IBidPack, IPopulatedAuctionWithProductReview } from './auction.type';
 import { IProductWithReview } from './product.type';
 import { IUser } from './user.type';
 
@@ -22,7 +22,7 @@ export interface IOrder {
   razorPayOrderId?: string;
   razorPayMetaData?: unknown;
   product?: IProductWithReview;
-  auction?: IPopulatedAuction;
+  auction?: IPopulatedAuctionWithProductReview;
   bidPack?: IBidPack;
   orderType: OrderTypeEnum;
   paymentStatus: OrderPaymentStatusEnum;

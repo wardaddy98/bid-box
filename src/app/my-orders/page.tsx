@@ -20,7 +20,6 @@ import {
   CheckCircleIcon,
   ClockIcon,
   CubeIcon,
-  TrophyIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
 import _ from 'lodash';
@@ -78,11 +77,31 @@ const MyOrders = () => {
     const createdReview: IReview | null = createReviewResponse?.body?.data ?? null;
 
     if (!_.isEmpty(createdReview)) {
-      orders = orders.map(e =>
-        e.product?._id === createdReview.product
-          ? { ...e, product: { ...e.product, review: createdReview } }
-          : e,
-      );
+      orders = orders.map(order => {
+        let updatedOrder = order;
+
+        if (updatedOrder?.product && updatedOrder.product?._id === createdReview?.product) {
+          updatedOrder = {
+            ...updatedOrder,
+            product: { ...updatedOrder.product, review: createdReview },
+          };
+        }
+
+        if (
+          updatedOrder?.auction &&
+          updatedOrder?.auction?.product?._id === createdReview?.product
+        ) {
+          updatedOrder = {
+            ...updatedOrder,
+            auction: {
+              ...updatedOrder.auction,
+              product: { ...updatedOrder.auction.product, review: createdReview },
+            },
+          };
+        }
+
+        return updatedOrder;
+      });
     }
 
     return orders;
@@ -118,8 +137,12 @@ const MyOrders = () => {
 
   const getOrderTypeDetails = (order: IOrder) => {
     let imageSrc =
-      order?.product?.productImages?.[0]?.signedUrl ?? '/assets/product-placeholder.png';
-
+      order.orderType === OrderTypeEnum.Product
+        ? (order?.product?.productImages?.[0]?.signedUrl ?? '/assets/product-placeholder.png')
+        : order.orderType === OrderTypeEnum.Auction
+          ? (order?.auction?.product?.productImages?.[0]?.signedUrl ??
+            '/assets/product-placeholder.png')
+          : '';
     switch (order.orderType) {
       case OrderTypeEnum['Bids Pack']:
         return {
@@ -146,7 +169,16 @@ const MyOrders = () => {
 
       case OrderTypeEnum.Auction:
         return {
-          icon: <TrophyIcon className="h-6 w-6 text-primary" />,
+          icon: (
+            <Image
+              alt="product"
+              onError={() => (imageSrc = '/assets/product-placeholder.png')}
+              src={imageSrc}
+              unoptimized
+              width={100}
+              height={100}
+            />
+          ),
           title: order.auction?.product?.title ?? 'Auction Win',
           subtitle: `Auction Order`,
         };
@@ -208,7 +240,20 @@ const MyOrders = () => {
           <div className="space-y-5">
             {orders.map(order => {
               const details = getOrderTypeDetails(order);
-              const review = order?.product?.review ?? null;
+
+              const review =
+                order.orderType === OrderTypeEnum.Product
+                  ? (order?.product?.review ?? null)
+                  : order.orderType === OrderTypeEnum.Auction
+                    ? (order?.auction?.product?.review ?? null)
+                    : null;
+
+              const productId =
+                order.orderType === OrderTypeEnum.Product
+                  ? order?.product?.productId
+                  : order.orderType === OrderTypeEnum.Auction
+                    ? order?.auction?.product?.productId
+                    : '';
 
               return (
                 <div
@@ -217,7 +262,7 @@ const MyOrders = () => {
                 >
                   <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10 overflow-hidden">
                         {details.icon}
                       </div>
 
@@ -289,9 +334,10 @@ const MyOrders = () => {
                     </div>
                   </div>
 
-                  {order.orderType === OrderTypeEnum.Product &&
+                  {(order.orderType === OrderTypeEnum.Product ||
+                    order.orderType === OrderTypeEnum.Auction) &&
                     order.paymentStatus === OrderPaymentStatusEnum.Success &&
-                    !expandedReviewOrderId && (
+                    expandedReviewOrderId !== order._id && (
                       <div className="flex justify-end mt-2">
                         <Button
                           variant="secondary"
@@ -302,9 +348,9 @@ const MyOrders = () => {
                       </div>
                     )}
 
-                  {expandedReviewOrderId === order._id && order.product && (
+                  {expandedReviewOrderId === order._id && productId && (
                     <ProductReviewForm
-                      productId={order.product.productId}
+                      productId={productId}
                       onSubmit={submitReview}
                       handleClose={() => setExpandedReviewOrderId(null)}
                       isLoading={isLoading}

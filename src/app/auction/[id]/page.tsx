@@ -183,7 +183,8 @@ const CurrentAuctionPage = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 ${compoundReviewDetails?.shipping ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
+                      style={{ width: `${compoundReviewDetails?.shipping || 0}%` }}
+                      className={`h-2.5 rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -193,7 +194,8 @@ const CurrentAuctionPage = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 ${compoundReviewDetails?.productQuality ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
+                      style={{ width: `${compoundReviewDetails?.productQuality || 0}%` }}
+                      className={`h-2.5 rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -203,7 +205,8 @@ const CurrentAuctionPage = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 ${compoundReviewDetails?.packaging ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
+                      style={{ width: `${compoundReviewDetails?.packaging || 0}%` }}
+                      className={`h-2.5 rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>
@@ -213,7 +216,8 @@ const CurrentAuctionPage = () => {
                   </span>
                   <div className="mx-4 h-2.5 w-full rounded-full bg-gray-200 ">
                     <div
-                      className={`h-2.5 ${compoundReviewDetails?.asDescribed ? `w-${compoundReviewDetails?.shipping}%` : 'w-0'} rounded-full bg-yellow-400`}
+                      style={{ width: `${compoundReviewDetails?.shipping || 0}%` }}
+                      className={`h-2.5 rounded-full bg-yellow-400`}
                     ></div>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { AuctionStatusEnum, IPopulatedAuction } from '@/types/auction.type';
+import { IBid } from '@/types/bid.type';
 import { formatAmount, isoDateToReadableFormat } from '@/utils/commonUtils';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -64,6 +65,15 @@ const ProductCard = ({ auction }: Props) => {
                 <span className="font-semibold">{isoDateToReadableFormat(auction.liveOn)}</span>
               </div>
             )}
+
+            {auction.status === AuctionStatusEnum.Completed && (
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">Winning Bid</span>
+                <span className="font-semibold">
+                  {formatAmount((auction?.winningBid as IBid)?.amount, false)}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -86,15 +96,16 @@ export default ProductCard;
 
 const StatusRibbon = ({ status }: { status: AuctionStatusEnum }) => {
   const isCancelled = status === AuctionStatusEnum.Cancelled;
+  const isUpcoming = status === AuctionStatusEnum.Pending;
 
   return (
     <div
       className={clsx(
         'absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide text-white',
-        isCancelled ? 'bg-red-500' : 'bg-blue-600',
+        isCancelled ? 'bg-red-500' : isUpcoming ? 'bg-blue-600' : 'bg-green-500',
       )}
     >
-      {isCancelled ? 'Cancelled' : 'Upcoming'}
+      {isCancelled ? 'Cancelled' : isUpcoming ? 'Upcoming' : 'Completed'}
     </div>
   );
 };

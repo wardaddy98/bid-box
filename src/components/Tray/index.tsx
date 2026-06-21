@@ -1,21 +1,27 @@
 'use client';
 
 import { IPopulatedAuction } from '@/types/auction.type';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/24/outline';
 import { throttle } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import EmptyValuePlaceholder from '../EmptyValuePlaceholder';
 import IconButton from '../IconButton';
 import ProductCard from '../ProductCard';
+import Tooltip from '../Tooltip';
 
 interface Props {
   heading: string;
   auctions: IPopulatedAuction[];
   containerClassName?: string;
+  tooltip?: string;
 }
 
 const Tray = (props: Props) => {
-  const { heading, containerClassName, auctions } = props;
+  const { heading, containerClassName, auctions, tooltip } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +61,14 @@ const Tray = (props: Props) => {
   return (
     <div className={`py-6 bg-accent px-2 lg:px-32 ${containerClassName}`}>
       <div className="mt-2 flex justify-between items-center">
-        <span className="font-semibold">{heading}</span>
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">{heading}</span>
+          {tooltip && (
+            <Tooltip content={tooltip}>
+              <InformationCircleIcon className="h-4 w-4 text-gray-400 hover:text-primary" />
+            </Tooltip>
+          )}
+        </div>
         {auctions?.length > 0 && (
           <div className="items-center gap-2 hidden lg:flex">
             <IconButton onClick={scrollLeft} name="left" rounded className="bg-white">

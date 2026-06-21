@@ -18,7 +18,6 @@ export const createUserSchema = z
     confirmPassword: z.string().min(1, 'Confirm password is required!'),
     adminCode: z.string().optional(),
     isAdmin: z.boolean().optional(),
-    // googleId: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
@@ -42,6 +41,26 @@ export const createUserSchema = z
         code: 'custom',
         path: ['adminCode'],
         message: 'Admin code should be 4 digits!',
+      });
+    }
+  });
+
+export const createPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .regex(
+        /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={[}\]|\\:;"'<>,.?/~`]).{8,16}$/,
+        'Password must contain uppercase, number, symbol and be 8-16 characters!',
+      ),
+    confirmPassword: z.string().min(1, 'Confirm password is required!'),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Passwords do not match!',
       });
     }
   });

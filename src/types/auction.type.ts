@@ -1,5 +1,5 @@
 import { IBid } from './bid.type';
-import { IProduct } from './product.type';
+import { IProduct, IProductWithReview } from './product.type';
 import { IPopulatedReview } from './review.type';
 import { IUser } from './user.type';
 
@@ -25,6 +25,10 @@ export interface IAuction {
 
 export interface IPopulatedAuction extends Omit<IAuction, 'product' | 'liveOn'> {
   product: IProduct;
+  liveOn: string;
+}
+export interface IPopulatedAuctionWithProductReview extends Omit<IAuction, 'product' | 'liveOn'> {
+  product: IProductWithReview;
   liveOn: string;
 }
 
