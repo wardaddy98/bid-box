@@ -62,6 +62,21 @@ export type ICreateDirectPurchaseOrderResponse = ApiResponse<{
   data: { bidsBalance: number; availableStock: number };
 }>;
 
+export type IGetAdminHomeDetailsResponse = ApiResponse<{
+  data: {
+    bidsPlacedToday: number;
+    cancelledAuctions: number;
+    completedAuctions: number;
+    failedOrders: number;
+    liveAuctions: number;
+    ordersCompleted: number;
+    todayRevenue: number;
+    totalCustomers: number;
+    totalRevenue: number;
+    upcomingAuctions: number;
+  };
+}>;
+
 export const userApi = rootApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<ILoginResponse, ILoginPayload>({
@@ -159,6 +174,12 @@ export const userApi = rootApi.injectEndpoints({
         body: payload,
       }),
     }),
+    getAdminHome: build.query<IGetAdminHomeDetailsResponse, unknown>({
+      query: () => ({
+        url: '/user/admin-home',
+        method: 'GET',
+      }),
+    }),
     getAllOrders: build.query<
       ApiResponse<{ data: IOrder[] }>,
       { paymentStatus: OrderPaymentStatusEnum | 'all'; search: string }
@@ -185,4 +206,5 @@ export const {
   useLazyGetAllOrdersQuery,
   useHandleGoogleOAuthMutation,
   useCreatePasswordMutation,
+  useGetAdminHomeQuery,
 } = userApi;

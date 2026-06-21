@@ -73,7 +73,11 @@ const WinnerCard = ({ auction }: Props) => {
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
-            <Avatar size={12} imageUrl={auction.winningBid.user.profileImage} />
+            <Avatar
+              size={12}
+              imageUrl={auction.winningBid.user.profileImage}
+              userName={auction.winningBid?.user?.name}
+            />
 
             <div>
               <div className="font-semibold text-gray-900">{auction.winningBid.user.name}</div>

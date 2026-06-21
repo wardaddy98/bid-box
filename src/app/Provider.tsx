@@ -17,7 +17,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           {children}
         </GoogleOAuthProvider>
       </PersistGate>
-      <ToastContainer position="top-right" autoClose={3000} pauseOnHover theme="light" />
+      <ToastContainer position="top-right" autoClose={2000} pauseOnHover theme="light" />
     </Provider>
   );
 };
