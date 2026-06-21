@@ -81,6 +81,14 @@ export const userApi = rootApi.injectEndpoints({
       }),
     }),
 
+    createPassword: build.mutation<ApiResponse<{}>, { password: string }>({
+      query: payload => ({
+        url: '/user/create-password',
+        method: 'PATCH',
+        body: payload,
+      }),
+    }),
+
     handleGoogleOAuth: build.mutation<IHandleGoogleOAuthResponse, { credential: string }>({
       query: payload => ({
         url: '/user/google-auth',
@@ -176,4 +184,5 @@ export const {
   useCreateDirectPurchaseOrderMutation,
   useLazyGetAllOrdersQuery,
   useHandleGoogleOAuthMutation,
+  useCreatePasswordMutation,
 } = userApi;

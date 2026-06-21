@@ -14,4 +14,5 @@ export interface IUser {
   googleId?: string;
   createdAt?: string;
   updatedAt?: string;
+  requiresPasswordCreation?: boolean;
 }
