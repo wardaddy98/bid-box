@@ -87,7 +87,7 @@ const AdminView = () => {
   ];
 
   return (
-    <div className="my-6 mx-4 lg:mx-20">
+    <div className="mt-20 mx-4 lg:mx-20">
       <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="border-b border-gray-200 px-6 py-5">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
