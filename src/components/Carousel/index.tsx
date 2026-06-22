@@ -40,11 +40,11 @@ export default function Carousel(props: Props) {
 
   const handleSwipeLeft = () => {
     if (index === images.length - 1) return;
-    prev();
+    next();
   };
   const handleSwipeRight = () => {
     if (index === 0) return;
-    next();
+    prev();
   };
 
   const handlers = useSwipeable({

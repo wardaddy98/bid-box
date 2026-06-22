@@ -6,6 +6,7 @@ import useIsLoggedIn from '@/hooks/useIsLoggedIn';
 import { getAuthSlice } from '@/redux/slices/auth.slice';
 import { UserRole } from '@/types/user.type';
 import { logout } from '@/utils/authUtils';
+import { formatAmount } from '@/utils/commonUtils';
 import {
   ArrowLeftEndOnRectangleIcon,
   Bars3Icon,
@@ -64,7 +65,7 @@ const Header = () => {
   const menuItemsMobileCustomer: MenuItem[] = [
     {
       label: 'Auctions',
-      onClick: () => router.push('/auctions'),
+      onClick: () => router.push('/'),
       startIcon: <MegaphoneIcon className="h-4 w-4" />,
     },
     {
@@ -104,7 +105,12 @@ const Header = () => {
           <div className="flex-1 md:flex md:items-center md:gap-12">
             <Link className="block" href="/">
               <span className="sr-only">Home</span>
-              <Image src="/assets/logo_transparent.png" alt="logo" width={140} height={100} />
+              <Image
+                src="/assets/logo_transparent.png"
+                alt="logo"
+                width={isBase ? 80 : 140}
+                height={100}
+              />
             </Link>
           </div>
 
@@ -202,7 +208,7 @@ const Header = () => {
             </nav>
 
             {isLoggedIn && (
-              <div className="flex items-center gap-8">
+              <div className={`flex items-center ${isBase ? 'gap-4' : 'gap-8'}`}>
                 <div className="px-4 py-1 items-center gap-3 border-2 border-gray-200 rounded-sm flex-nowrap flex">
                   <Avatar imageUrl={user?.profileImage ?? ''} userName={user?.name ?? ''} />
                   <div className="flex flex-col items-center justify-center">
@@ -214,7 +220,7 @@ const Header = () => {
                         <span className="text-xs font-semibold text-gray-500">
                           {user?.role === UserRole.Admin
                             ? `(Admin)`
-                            : `Bid Wallet - ${user?.bidsBalance}`}
+                            : `Bid Wallet - ${formatAmount(user?.bidsBalance ?? 0, false)}`}
                         </span>
                       </div>
                     )}
